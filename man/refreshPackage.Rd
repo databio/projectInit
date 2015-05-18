@@ -6,13 +6,15 @@
 Useful if I'm debugging packages and want to try the new version.
 Expects it to be in the ~/rpack/ package folder. by default}
 \usage{
-refreshPackage(x, path = "~/rpack/", compileAttributes = TRUE,
+refreshPackage(pkg, path = "~/rpack/", compileAttributes = TRUE,
   roxygenize = TRUE)
 }
 \arguments{
-\item{x}{a package name}
+\item{pkg}{Package name}
 
-\item{roxygenize}{should I roxygenize it, too?}
+\item{compileAttributes}{Should I Rcpp:compileAttributes to refresh Rcpp code before installing?}
+
+\item{roxygenize}{Should I roxygen2::roxygenize it to refresh documentation before installing?}
 }
 \description{
 Detach a custom packages, re-document, re-install, and re-load.
