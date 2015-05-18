@@ -1,0 +1,9 @@
+Package: project.init
+Type: Package
+Title: Makes it easy to create R environments for different projects
+Version: 0.0.1
+Date: 2015-05-18
+Author: Nathan Sheffield
+Maintainer: Nathan Sheffield <yourfault@somewhere.net>
+Description: Just my personal package providing a few initialization functions that I use to create project-specific r environments.
+License: What license is it under?
