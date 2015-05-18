@@ -23,7 +23,7 @@ refreshPackage = function(pkg, path = "~/rpack/", compileAttributes = TRUE, roxy
 #	tryCatch({ unloadNamespace(pkg) }, error = function(e) { message(e) })
 	# devtools::unload is superior because it also unloads dlls, so this
 	# function could work with packages containing c++ code.
-	tryCatch({ devtools::unload(pkg) }, error = function(e) { message(e) })
+	tryCatch({ devtools::unload(packageDir) }, error = function(e) { message(e) })
 	install.packages(packageDir, repos=NULL);
 	library(pkg, character.only=TRUE);
 }
