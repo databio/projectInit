@@ -100,6 +100,7 @@ project.init2 = function(codeDir) {
 #'
 #' @param utility The name of the R script in the util directory to load.
 #' @param utilityDir Directory to search (custom)
+#' @export
 utility = function(utilities, utilityDir="") {
 	#build a list of ordered directories to search for the utility.
 	utilityDirs = c(utilityDir, getOption("WORKING.DIR"), getOption("SHARE.RUTIL.DIR"));
