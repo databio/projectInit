@@ -133,8 +133,7 @@ utility = function(utilities, utilityDir="") {
 #you want to adjust the default relative folder directory structure
 
 init.dirs = function() {
-options(SHARE.RUTIL.DIR=paste0(getOption("SHARE.DIR"), "R/"));		#Nathan's R Utilities path
-options(SHARE.RCACHE.DIR=paste0(getOption("SHARE.DIR"), "RCache/"));		#Global RData cache
+options(SHARE.RCACHE.DIR=paste0(getOption("SHARE.DIR"), "cache/RCache/"));		#Global RData cache
 options(SHARE.DATA.DIR=paste0(getOption("SHARE.DIR"), "data/"));			#Global Shared Data
 options(RCACHE.DIR=paste0(getOption("WORKING.DIR"), "RCache/")); 		#Project RData cache
 options(RBUILD.DIR=paste0(getOption("WORKING.DIR"), "RBuild/"));			#Project build scripts
