@@ -60,6 +60,7 @@ project.init = function(codeDir=NULL, dataDir=NULL, SHARE.DIR=getOption("SHARE.D
 		if (file.exists(project.script)) {
 			message("Initializing ", project.script, "...")
 			source(project.script)
+			options(PROJECT.INIT=project.script);
 			initialized=TRUE;
 			break;
 		}
@@ -132,14 +133,55 @@ utility = function(utilities, utilityDir="") {
 #these should not need to change, unless
 #you want to adjust the default relative folder directory structure
 
+#'@export
+nenv = function() {
+nShareOptionsList = c("SHARE.DIR", "SHARE.RUTIL.DIR", "SHARE.RCACHE.DIR", "SHARE.DATA.DIR","RCACHE.DIR", "RBUILD.DIR", "ROUT.DIR", "PROJECT.INIT", "PROJECT.DATA.DIR", "PROJECT.CODE.BASE", "PROJECT.DATA.BASE")
+	value = sapply(nShareOptionsList, getOption)
+	cbind(value)
+}
+
 init.dirs = function() {
-options(SHARE.RCACHE.DIR=paste0(getOption("SHARE.DIR"), "cache/RCache/"));		#Global RData cache
-options(SHARE.DATA.DIR=paste0(getOption("SHARE.DIR"), "data/"));			#Global Shared Data
+# Set defaults:
+setOption("ROUT.DIR", paste0(getOption("PROJECT.DATA.DIR"), "results_analysis/"));
+setOption("SHARE.RCACHE.DIR", paste0(getOption("SHARE.DIR"), "cache/RCache/"));		#Global RData cache
 options(RCACHE.DIR=paste0(getOption("WORKING.DIR"), "RCache/")); 		#Project RData cache
-options(RBUILD.DIR=paste0(getOption("WORKING.DIR"), "RBuild/"));			#Project build scripts
-options(PROJECT.INIT=paste0(getOption("WORKING.DIR"), "src/00-init.R"));	#This script file name
-setwd(getOption("WORKING.DIR"));
-#dir.create(RDATA.DIR, showWarnings=FALSE);
+
+# Should deprecate these ones:
+setOption("SHARE.DATA.DIR", paste0(getOption("SHARE.DIR"), "data/"));			
+setOption("RBUILD.DIR", paste0(getOption("WORKING.DIR"), "RBuild/"));
+}
+
+
+#' Sets an option value if it's not already set.
+#' @param option Name of option
+#' @param value Value to set it to
+#' @export
+setOption = function(option, value) {
+	if(is.null(getOption(option))) {
+		setOption = list(value)
+		names(setOption) = option
+		options(setOption)
+	}
+}
+
+
+#' ROUT Wrapper function
+#'
+#' pass a relative file path, and this will append the global results
+#' directory to it. Use it to stick output easily directly into the results
+#' directory, instead of relative to the local directory.
+#' This allows you to keep a working directory that's relative to your code,
+#' but put the results somewhere else (which is shared space).
+#' @export
+rout = function(...) {
+	paste0(getOption("ROUT.DIR"), ...);
+}
+
+#' Data Dir
+#' Helper wrapper to get data for this project.
+#' @export
+datdir = function(...) {
+	paste0(getOption("PROJECT.DATA.DIR"), ...);
 }
 
 
