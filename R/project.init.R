@@ -184,6 +184,13 @@ datdir = function(...) {
 	paste0(getOption("PROJECT.DATA.DIR"), ...);
 }
 
+#' Data Dir
+#' Helper wrapper to get data for this project.
+#' @export
+resourcedir = function(...) {
+	paste0(getOption("SHARE.DIR"), ...);
+}
+
 
 init.options = function() {
 #######################################################################
