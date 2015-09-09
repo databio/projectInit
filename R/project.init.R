@@ -105,7 +105,7 @@ renewProject = function() {
 }
 #rp = renewProject;
 
-#@export
+#' @export
 rp= function() {
 	if (is.null(getOption("PROJECT.DIR"))) {
 		stop("No loaded project.")
