@@ -227,23 +227,31 @@ setOption = function(option, value) {
 #' This allows you to keep a working directory that's relative to your code,
 #' but put the results somewhere else (which is shared space).
 #' @export
-rout = function(...) {
+dirout = function(...) {
 	paste0(getOption("ROUT.DIR"), ...);
 }
 
 #' Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
-datdir = function(...) {
+dirdata = function(...) {
 	paste0(getOption("PROCESSED.PROJECT"), ...);
 }
 
-#' Data Dir
+#' Resource Dir
 #' Helper wrapper to get data for this project.
 #' @export
-resourcedir = function(...) {
+dirres = function(...) {
 	paste0(Sys.getenv("RESOURCES"), ...);
 }
+
+#' Web Dir
+#' Helper wrapper to get data for this project.
+#' @export
+dirweb = function(...) {
+	paste0(Sys.getenv("WEB"), ...);
+}
+
 
 
 init.options = function() {
