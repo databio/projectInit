@@ -1,3 +1,12 @@
+#' Package docs
+#' @docType package
+#' @name project.init
+#' @author Nathan Sheffield
+#'
+#' @references \url{http://github.com/sheffien}
+NULL
+
+
 #' Define project init function
 #' All this does is source the 00-init.R script for the project,
 #' you pass a complete folder or a relative path.

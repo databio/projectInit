@@ -7,7 +7,7 @@
 #' @param roxygenize	Should I roxygen2::roxygenize it to refresh documentation before installing?
 #' @param compileAttributes	Should I Rcpp:compileAttributes to refresh Rcpp code before installing?
 #' @export
-refreshPackage = function(pkg, path = "~/rpack/", compileAttributes = TRUE, roxygenize = TRUE) {
+refreshPackage = function(pkg, path = Sys.getenv("CODEBASE"), compileAttributes = TRUE, roxygenize = TRUE) {
 	packageDir = paste0(path, pkg);
 	if (!file.exists(packageDir)) { 
 		stop("Package does not exist: ", packageDir)

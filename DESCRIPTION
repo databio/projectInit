@@ -5,5 +5,7 @@ Version: 0.0.1
 Date: 2015-05-18
 Author: Nathan Sheffield
 Maintainer: Nathan Sheffield <yourfault@somewhere.net>
-Description: Just my personal package providing a few initialization functions that I use to create project-specific r environments.
+Description: Just my personal package providing a few initialization functions
+    that I use to create project-specific r environments.
 License: What license is it under?
+RoxygenNote: 5.0.1
