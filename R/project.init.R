@@ -85,7 +85,7 @@ go = project.init
 
 #' Helper alias to re-run init script, using your current dir settings.
 project.refresh = function() { 
-	project.init2(codeDir=getOption("PROJECT.DIR"), dataDir=getOption("PROCESSED.PROJECT"), RESOURCES=Sys.getenv("RESOURCES"))
+	project.init(codeDir=getOption("PROJECT.DIR"), dataDir=getOption("PROCESSED.PROJECT"), RESOURCES=Sys.getenv("RESOURCES"))
 }
 
 #' Helper alias for the common case where the data and code dirs share
@@ -216,14 +216,17 @@ setOption("RBUILD.DIR", paste0(getOption("PROJECT.DIR"), "RBuild/"));
 
 
 #' Sets an option value if it's not already set.
+#' Why only if it's not already set?
 #' @param option Name of option
 #' @param value Value to set it to
+#' @param force overwrite if already set.
 #' @export
-setOption = function(option, value) {
-	if(is.null(getOption(option))) {
-		setOption = list(value)
-		names(setOption) = option
-		options(setOption)
+setOption = function(option, value, force=TRUE) {
+	# I can't remember why I made it default to not forcing, so I'm changing it.
+	if(is.null(getOption(option)) || force) {
+		optionsToSet = list(value)
+		names(optionsToSet) = option
+		options(optionsToSet)
 	}
 }
 
