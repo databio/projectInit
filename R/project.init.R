@@ -298,7 +298,9 @@ init.utilities = function() {
 #######################################################################
 	if (! is.null(getOption("RGENOMEUTILS")) ) {
 		devtools::load_all(getOption("RGENOMEUTILS"))
-	}
+	} else {
+		message("You can connect the RGenomeUtils if you set an option named RGENOMEUTILS pointing to the RGenomeUtils repo; I usually set this in my .Rprofile")
+	} 
 	#utility("funcCommon.R")
 	#utility("funcLoadSharedData.R")
 }
