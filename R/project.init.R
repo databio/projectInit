@@ -207,7 +207,10 @@ init.dirs = function() {
 # Set defaults:
 setOption("ROUT.DIR", paste0(getOption("PROCESSED.PROJECT"), "results_analysis/"));
 setOption("RESOURCES.RCACHE", paste0(Sys.getenv("RESOURCES"), "cache/RCache/"));		#Global RData cache
-setOption("RCACHE.DIR", paste0(getOption("PROJECT.DIR"), "RCache/")); 		#Project RData cache
+#Project RData cache
+# Now put it in the data folder
+#setOption("RCACHE.DIR", paste0(getOption("PROJECT.DIR"), "RCache/")); 		
+setOption("RCACHE.DIR", paste0(getOption("PROCESSED.PROJECT"), "RCache/")); 		
 
 # Should deprecate these ones:
 
