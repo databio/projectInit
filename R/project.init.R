@@ -205,7 +205,7 @@ nenv = function() {
 
 init.dirs = function() {
 # Set defaults:
-setOption("ROUT.DIR", paste0(getOption("PROCESSED.PROJECT"), "results_analysis/"));
+setOption("ROUT.DIR", paste0(getOption("PROCESSED.PROJECT"), "analysis/"));
 setOption("RESOURCES.RCACHE", paste0(Sys.getenv("RESOURCES"), "cache/RCache/"));		#Global RData cache
 #Project RData cache
 # Now put it in the data folder
