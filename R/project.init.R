@@ -246,6 +246,15 @@ dirout = function(...) {
 	paste0(getOption("ROUT.DIR"), ...);
 }
 
+#' Helper function to silently create a subdirectory in the project
+#' output directory.
+#'
+#' @export
+createOutputSubdir = function(...) {
+	dir.create(dirout(...), showWarnings = FALSE, recursive = TRUE)
+
+}
+
 #' Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
