@@ -75,7 +75,10 @@ project.init = function(codeDir=NULL, dataDir=NULL, RESOURCES=Sys.getenv("RESOUR
 		}
 	}
 	if (!initialized) {
-		message("Found no project init script.")
+		defaultInitScript = paste0(getOption("PROJECT.DIR"), "src/00-init.R")
+
+		message("Found no project init script. If you place a file in ", defaultInitScript,
+			", it will be loaded automatically when you initialize this project.")
 	}
 }
 
@@ -115,7 +118,7 @@ renewProject = function() {
 #rp = renewProject;
 
 #' @export
-rp= function() {
+rp = function() {
 	if (is.null(getOption("PROJECT.DIR"))) {
 		stop("No loaded project.")
 	}
@@ -255,12 +258,29 @@ createOutputSubdir = function(...) {
 
 }
 
+#' Helper function to silently create a subdirectory in the parent project
+#' directory (the processed data directory).
+#'
+#' @export
+createRootSubdir = function(...) {
+	dir.create(dirdata(...), showWarnings = FALSE, recursive = TRUE)
+
+}
+
 #' Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
 dirdata = function(...) {
 	paste0(getOption("PROCESSED.PROJECT"), ...);
 }
+
+#' Raw Data Dir
+#' Helper wrapper to get data for this project.
+#' @export
+dirraw = function(...) {
+	paste0(getOption("RAWDATA"), ...);
+}
+
 
 #' Resource Dir
 #' Helper wrapper to get data for this project.
@@ -288,7 +308,7 @@ options(echo=TRUE);							#show commands (?)
 #It drives me nuts when strings get processed as factors.
 options(stringsAsFactors=FALSE);			#treat strings as strings
 #grDevices::X11.options(type = "Xlib");					#Faster plotting
-options(width=154);							#optimized for full screen width.
+options(width=130);							#optimized for full screen width.
 
 }
 
