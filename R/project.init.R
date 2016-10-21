@@ -278,7 +278,7 @@ dirdata = function(...) {
 #' Helper wrapper to get data for this project.
 #' @export
 dirraw = function(...) {
-	paste0(getOption("RAWDATA"), ...);
+	paste0(Sys.getenv("RAWDATA"), ...);
 }
 
 
