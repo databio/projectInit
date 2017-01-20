@@ -13,10 +13,10 @@ Add this to your `.bashrc`:
 export CODEBASE="$HOME/code/"
 
 # Pointer to the common shared resources directory
-export RESOURCES="/data/groups/lab_bock/shared/resources/"
+export RESOURCES="/scratch/ns5bc/resources/"
 
 # Pointer to the 'processed data' filesystem
-export PROCESSED="/scratch/lab_bock/shared/projects/"
+export PROCESSED="/scratch/ns5bc/processed/"
 ```
 
 ## Install
