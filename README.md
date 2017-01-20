@@ -4,9 +4,9 @@
 
 ## Environment
 
-`project.init` uses environment variables to enable portablility across systems and users.
+`project.init` uses environment variables to enable portablility across systems and users. You should set up 3 environment variables to use `project.init` most effectively: `CODEBASE`, `RESOURCES`, and `PROCESSED`.
 
-Add this to your `.bashrc`:
+For example, in my environment, I use this to my `.bashrc`:
 
 ```
 # Pointer to the collection of git repos
