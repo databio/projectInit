@@ -3,33 +3,36 @@
 #' @name project.init
 #' @author Nathan Sheffield
 #'
-#' @references \url{http://github.com/sheffien}
+#' @references \url{http://github.com/nsheff}
 NULL
 
 
 #' Define project init function
 #' All this does is source the 00-init.R script for the project,
 #' you pass a complete folder or a relative path.
+#' @param code_dir
 #' @export
-project.init = function(codeDir=NULL, dataDir=NULL, RESOURCES=Sys.getenv("RESOURCES")) {
+project.init = function(code_dir=NULL, dataDir=NULL, RESOURCES=Sys.getenv("RESOURCES")) {
 	if (is.null(Sys.getenv("RESOURCES"))) {
 		stop ("you must set global environmental variable $RESOURCES before calling project.init().");
 	}
 
+	codebase = Sys.getenv("CODEBASE")
+
 	# Set PROJECT.DIR
-	if (is.null(codeDir)) { # null working dir.
+	if (is.null(code_dir)) { # null working dir.
 		warning ("PROJECT.DIR set to current dir: ", getwd());
 		PROJECT.DIR=paste0(getwd(), "/");
-	} else if (substr(codeDir,1,1) != "/" & substr(codeDir,1,1) != "~") {
+	} else if (substr(code_dir, 1, 1) != "/" & substr(code_dir, 1, 1) != "~") {
 		# It is a relative path
-		if (is.null(Sys.getenv("CODEBASE"))) {
+		if (is.null(codebase) | identical("", codebase)) {
 			# relative path requires global base directory
 			stop("You should set an environment variable CODEBASE in your .bashrc to use the shared R utils most effectively. Then you can refer to R projects with relative paths, making the code portable and sharable.");
 		}
-		PROJECT.DIR = paste0(Sys.getenv("CODEBASE"), codeDir, "/")
+		PROJECT.DIR = file.path(codebase, code_dir)
 	} else {
-		#It's a global path
-		PROJECT.DIR = codeDir
+		# Regard code directory as absolute/global.
+		PROJECT.DIR = code_dir
 	}
 
 	# Set PROCESSED.PROJECT
@@ -88,18 +91,18 @@ go = project.init
 
 #' Helper alias to re-run init script, using your current dir settings.
 project.refresh = function() { 
-	project.init(codeDir=getOption("PROJECT.DIR"), dataDir=getOption("PROCESSED.PROJECT"), RESOURCES=Sys.getenv("RESOURCES"))
+	project.init(code_dir=getOption("PROJECT.DIR"), dataDir=getOption("PROCESSED.PROJECT"), RESOURCES=Sys.getenv("RESOURCES"))
 }
 
 #' Helper alias for the common case where the data and code dirs share
 #' a name.
 #' @export
-project.init2 = function(codeDir) {
-	project.init(codeDir=codeDir, dataDir=codeDir, RESOURCES=Sys.getenv("RESOURCES"))
+project.init2 = function(code_dir) {
+	project.init(code_dir=code_dir, dataDir=code_dir, RESOURCES=Sys.getenv("RESOURCES"))
 }
 
 
-#If you make changes to a utility script and want to reload it, this will reset all the utilities, and reset you to the CWD.
+# If you make changes to a utility script and want to reload it, this will reset all the utilities, and reset you to the CWD.
 renewProject = function() {
 	clearLoadFunctions("PROJECT.VARS");
 	clearLoadFunctions("SHARE.VARS");
@@ -115,7 +118,7 @@ renewProject = function() {
 	setwd(saveWorkingDir);
 	message(saveWorkingDir);
 }
-#rp = renewProject;
+
 
 #' @export
 rp = function() {
@@ -124,6 +127,7 @@ rp = function() {
 	}
 	project.init(getOption("PROJECT.DIR"), getOption("PROCESSED.PROJECT"))
 }
+
 
 #' This is Nathan's custom utility loading function.
 #' It goes with my R utility package, and is used to load up utilities from
@@ -134,17 +138,16 @@ rp = function() {
 #' It will search first any passed dir, then the working dir, and finally
 #' the global RGENOMEUTILS for the script to load.
 #'
-#' Should probably be renamed in the future.
 #'
 #' @param utility The name of the R script in the util directory to load.
 #' @param utilityDir Directory to search (custom)
 #' @export
 utility = function(utilities, utilityDir="") {
-	#build a list of ordered directories to search for the utility.
+	# Build a list of ordered directories to search for the utility.
 	utilityDirs = c(utilityDir, getOption("PROJECT.DIR"), paste0(getOption("RGENOMEUTILS"), "R/"));
 	for (u in utilities) {
 		foundUtility = FALSE;
-		#looks for a directory with the utilities; loads it in priority order.
+		# Look for a directory with the utilities, and load it in priority order.
 		for (d in utilityDirs) {
 			if ( substr(d,nchar(d), nchar(d)) != "/") {
 				d = paste(d, "/"); 
@@ -161,6 +164,7 @@ utility = function(utilities, utilityDir="") {
 		options(LOADED.UTILITIES=unique(append(getOption("LOADED.UTILITIES"), u))) #keep this in options for renewProject();
 	}
 }
+
 
 loadAllUtilities = function(utilityDir=getOption("RGENOMEUTILS")) {
 	utilities = list.files(utilityDir, pattern=".R$")
@@ -200,10 +204,6 @@ nenv = function() {
 	value = sapply(nShareOptionsList, getOption)
 	rbind(cbind(envVarsValues), cbind(value))
 }
-
-#Sys.getenv("PROCESSED")
-#Sys.getenv("CODEBASE")
-#Sys.getenv("RESOURCES")
 
 
 init.dirs = function() {
@@ -283,58 +283,49 @@ dirraw = function(...) {
 
 
 #' Resource Dir
-#' Helper wrapper to get data for this project.
+#' Helper wrapper to get filesystem data for this project.
 #' @export
 dirres = function(...) {
 	paste0(Sys.getenv("RESOURCES"), ...);
 }
 
-#' Web Dir
-#' Helper wrapper to get data for this project.
+#' Web directory
+#' Helper wrapper to get web data for this project.
 #' @export
 dirweb = function(...) {
 	paste0(Sys.getenv("WEB"), ...);
 }
 
 
-
+# Load basic options (non-project-specific).
 init.options = function() {
-#######################################################################
-# Load basic options (so far, these are not project-specific).
-#######################################################################
-options(scipen=15); 						#turn off scientific notation
-options(menu.graphics=FALSE);				#suppress gui selection
-options(echo=TRUE);							#show commands (?)
-#It drives me nuts when strings get processed as factors.
-options(stringsAsFactors=FALSE);			#treat strings as strings
-#grDevices::X11.options(type = "Xlib");					#Faster plotting
-options(width=130);							#optimized for full screen width.
-
+	# It drives me nuts when strings get processed as factors.
+	options(stringsAsFactors=FALSE);			# treat strings as strings
+	options(echo=TRUE);							# show commands (?)
+	options(menu.graphics=FALSE);				# suppress gui selection
+	options(width=130);							# Optimized for full screen width
+	options(scipen=15); 						# turn off scientific notation
 }
 
-init.packages = function() {
-#######################################################################
+
 # Load common packages
-#######################################################################
-#Used commonly and loading quickly enough to warrant loading every time
-message("init.packages() ...");
-library(devtools)
-library(data.table, quietly=TRUE);
-library(extrafont);
-library(simpleCache);
-library(ggplot2);
+init.packages = function() {
+	message("init.packages() ...");
+	library(devtools)
+	library(data.table, quietly=TRUE);
+	library(extrafont);
+	library(simpleCache);
+	library(ggplot2);
 }
 
 
 init.utilities = function() {
-#######################################################################
 	if (! is.null(getOption("RGENOMEUTILS")) ) {
 		devtools::load_all(getOption("RGENOMEUTILS"))
 	} else {
-		message("You can connect the RGenomeUtils if you set an option named RGENOMEUTILS pointing to the RGenomeUtils repo; I usually set this in my .Rprofile")
+		message("You can connect the RGenomeUtils if you set an option named 
+			RGENOMEUTILS pointing to the RGenomeUtils repo; I usually set this in my .Rprofile")
 	} 
-	#utility("funcCommon.R")
-	#utility("funcLoadSharedData.R")
 }
 
 

@@ -17,6 +17,10 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 	yamls = list("metadata/config.yaml",
 						"metadata/project_config.yaml",
 						paste0("metadata/", project, ".yaml"))
+	
+	# DEBUG
+	sprintf(paste0(yamls, collapse=" "), file=stdout())
+
 	cfg = NULL
 	if (! is.null(filename)) {
 		yamls = c(filename, yamls)
