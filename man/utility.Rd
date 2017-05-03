@@ -19,7 +19,3 @@ utility(utilities, utilityDir = "")
 It will search first any passed dir, then the working dir, and finally
 the global RGENOMEUTILS for the script to load.
 }
-\details{
-Should probably be renamed in the future.
-}
-

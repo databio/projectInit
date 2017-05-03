@@ -15,45 +15,52 @@ Hint = function(varname) {
 }
 
 
+#' Determine whether a path is absolute.
+#'
+#' @param path The path to check for seeming absolute-ness.
+#' @return Flag indicating whether the \code{path} appears to be absolute.
+#' @family path operations
+#' @export
 IsAbsolute = function(path) {
-  # Determine whether a path is absolute.
-  #
-  # Args:
-  #   path: File or folder path to check for absolute-ness.
-  #
-  # Returns:
-  #   Whether the given path indeed appears to be absolute.
-  return(identical(path, normalizePath(path)))
+  first_char = substr(path, 1, 1)
+  return(identical("/", first_char) | identical("~", first_char))
 }
 
 
+IsDefined = function(var) { ! (is.na(var) | is.null(var)) }
+
+
+MakeAbsPath = function(perhaps_relative, parent) {
+	if (IsAbsolute(perhaps_relative)) perhaps_relative
+	else file.path(parent, perhaps_relative)
+}
+
+
+#' Determine whether a path is absolute.
+#'
+#' @param target The path to check for seeming absolute-ness.
+#' @param env_var Name of the environment variable with parent folder candidate.
+#' @param when_null Strategy for deriving target if its argument is null.
+#' @return \code{target} if it's already absolute, result of \code{when_null()} 
+#'   if \code{target} is null, or joined version of parent candidate stored in 
+#'   \code{env_var} and (relative) \code{target}.
+#' @family path operations
+#' @export
 MakePath = function(target, env_var, when_null) {
-  # Make an absolute path based on one of interest and some alternatives.
-  #
-  # Args:
-  #   target: The primary path for which an absolute version is desired.
-  #   env_var: Environment variable for which value is parent path candidate.
-  #   when_null: How to make the path when the target is null.
-  #
-  # Returns:
-  #   (Absolute) path derived from inputs. If the first argument was 
-  #   already absolute, then this is returned. If it was null, then 
-  #   the path to the working directory is used. If the first argument 
-  #   is neither null nor absolute, it's joined with the parent candidate.
   
   if (is.null(target)) { # null working dir.
 		fullpath = when_null()
 		warning ("Using alternative for null target: ", fullpath);
 	} else {
+
 		parent = Sys.getenv(env_var)
 		
 		if (identical("", parent)) {
 			stop(Hint(env_var))
 		}
 		
-		normalized = normalizePath(target)
-		if (identical(target, normalized)) {
-			fullpath = normalized
+		if (IsAbsolute(target)) {
+			fullpath = target
 		} else {
 			fullpath = file.path(parent, target)
 		}

@@ -20,7 +20,7 @@ project.init = function(code_dir = NULL,
 			global environmental variable RESOURCES before calling.")
 	}
 
-	PROJECT.DIR = MakePath(code_dir, env_var = "CODEBASE", when_null = getwd)
+	PROJECT.DIR = MakePath(code_dir, env_var = "CODE", when_null = getwd)
 	PROCESSED.PROJECT = MakePath(data_dir, 
 		env_var = "PROCESSED", when_null = function() { PROJECT.DIR })
 
@@ -166,7 +166,7 @@ findUtility = function(string) {
 #'@export
 nenv = function() {
 	# env variables
-	envVars = c("RAWDATA", "PROCESSED", "RESOURCES", "WEB", "CODEBASE")
+	envVars = c("RAWDATA", "PROCESSED", "RESOURCES", "WEB", "CODE")
 	envVarsValues = sapply(envVars, Sys.getenv)
 	
 	nShareOptionsList = c("PROJECT.DIR", "PROJECT.INIT", 

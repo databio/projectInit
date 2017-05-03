@@ -1,3 +1,4 @@
+library("pryr")
 library("utils")
 
 #' Loads a yaml config file
@@ -6,35 +7,30 @@ library("utils")
 #' @param file file path to config file, allows you to specify an exact file.
 #' @export
 load.config = function(project=NULL, sp=NULL, filename=NULL) {
-	if ( ! requireNamespace("yaml", quietly=TRUE)) {
-		warning("Package yaml is required to load yaml config files.")
-		return
-	}
-	
+
 	if (is.null(project)) { 
-		projectDir = options("PROJECT.DIR")
+		project_dir = options("PROJECT.DIR")
 	} else {
-		codepath = Sys.getenv("CODEBASE")
-		projectDir = if(is.null(codepath) | identical("", codepath)) project else file.path(codepath, project)
+		codepath = Sys.getenv("CODE")
+		project_dir = if(is.null(codepath) | identical("", codepath)) project else file.path(codepath, project)
 	}
 	
 	# If no file is specified, try these default locations
-	yamls = c("metadata/config.yaml", 
-		"metadata/project_config.yaml", 
-		file.path("metadata", sprintf("%s.yaml", project)))
+	metadata_prefix = function(filename) { file.path("metadata", filename) }
+	filenames = c("config.yaml", "project_config.yaml", 
+		sprintf("%s.yaml", project))
+	yamls = sapply(filenames, metadata_prefix)
 	
-	# DEBUG
-	sprintf(paste0(yamls, collapse=" "), file=stdout())
-
 	# Prioritize given filename over defaults.
 	if (!is.null(filename)) {
 		yamls = c(filename, yamls)
 	}
 
-	cfgFile = FirstExtantFile(files = yamls, parent = projectDir)
-	if (is.null(cfgFile)) {
+	ensure_abs = pryr::partial(MakeAbsPath, parent = project_dir)
+	cfgFile = FirstExtantFile(files = yamls, parent = project_dir, modify = ensure_abs)
+	if (!IsDefined(cfgFile)) {
 		message("No config file found.")
-		return
+		return()
 	}
 	
 	cfg = yaml::yaml.load_file(cfgFile)
@@ -45,7 +41,7 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 		spc = cfg$subprojects[[sp]]
 		if (is.null(spc)) {
 			message("Subproject not found: ", sp)
-			return
+			return()
 		}
 		cfg = modifyList(cfg, cfg$subprojects[[sp]])
 		message("Loading subproject: ", sp)
@@ -69,24 +65,27 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 }
 
 
-FirstExtantFile = function(files, parent) {
+FirstExtantFile = function(files, parent, modify = identity) {
 	# Find the first extant file from a sequence of candidates.
 	#
 	# Args:
 	#   files: The sequence file names or paths to consider.
 	#   parent: Path to the folder to which each element considered 
 	#           should be joined if the element isn't absolute path.
+	#   modify: Function with which to modify each element before 
+	#           checking existence.
 	#
 	# Returns:
-	#   (Absolute) path to the first element that exists. Null if 
+	#   (Absolute) path to the first element that exists. NA if 
 	#   no element considered resolves to valid filesystem location.
-	for (f in files) {
-		path = if(IsAbsolute(f)) f else file.path(parent, f)
-		if (file_test("-f", path)) return(path)
-	}
+
+	# DEBUG
+	write(sprintf("FILES: %s", paste0(files, collapse=", ")), file=stdout())
+	write(sprintf("PARENT: %s", parent), file=stdout())
+	write(sprintf("MODIFIED: %s", paste0(sapply(files, modify), collapse = ", ")), file=stderr())
+	modified = sapply(files, modify)
+	modified[which(sapply(modified, FileExists))[1]]
 }
 
 
-IsAbsolute = function(path) {
-	return(identical(path, normalizePath(path)))
-}
+FileExists = function(fpath) { file_test("-f", fpath) }

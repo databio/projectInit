@@ -18,4 +18,3 @@ setOption(option, value, force = TRUE)
 Sets an option value if it's not already set.
 Why only if it's not already set?
 }
-
