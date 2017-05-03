@@ -12,52 +12,24 @@ NULL
 #' you pass a complete folder or a relative path.
 #' @param code_dir
 #' @export
-project.init = function(code_dir=NULL, dataDir=NULL, RESOURCES=Sys.getenv("RESOURCES")) {
-	if (is.null(Sys.getenv("RESOURCES"))) {
-		stop ("you must set global environmental variable $RESOURCES before calling project.init().");
+project.init = function(code_dir = NULL, 
+	data_dir = NULL, RESOURCES = Sys.getenv("RESOURCES")) {
+	
+	if (identical("", RESOURCES) | is.null(RESOURCES)) {
+		stop ("Supply RESOURCES argument to project.init() or set 
+			global environmental variable RESOURCES before calling.")
 	}
 
-	codebase = Sys.getenv("CODEBASE")
-
-	# Set PROJECT.DIR
-	if (is.null(code_dir)) { # null working dir.
-		warning ("PROJECT.DIR set to current dir: ", getwd());
-		PROJECT.DIR=paste0(getwd(), "/");
-	} else if (substr(code_dir, 1, 1) != "/" & substr(code_dir, 1, 1) != "~") {
-		# It is a relative path
-		if (is.null(codebase) | identical("", codebase)) {
-			# relative path requires global base directory
-			stop("You should set an environment variable CODEBASE in your .bashrc to use the shared R utils most effectively. Then you can refer to R projects with relative paths, making the code portable and sharable.");
-		}
-		PROJECT.DIR = file.path(codebase, code_dir)
-	} else {
-		# Regard code directory as absolute/global.
-		PROJECT.DIR = code_dir
-	}
-
-	# Set PROCESSED.PROJECT
-	if (is.null(dataDir)) { 
-		warning ("PROCESSED.PROJECT set to current PROJECT.DIR: ", PROJECT.DIR);
-		PROCESSED.PROJECT=PROJECT.DIR
-	} else if (substr(dataDir,1,1) != "/" & substr(dataDir,1,1) != "~") {
-		# It is a relative path
-		if (is.null(Sys.getenv("PROCESSED"))) {
-			# relative path requires global base directory
-			stop("You should set an environment variable PROCESSED in your .bashrc to use the shared R utils most effectively. Then you can refer to R projects with relative paths, making the code portable and sharable.");
-		}
-		PROCESSED.PROJECT = paste0(Sys.getenv("PROCESSED"), dataDir, "/")
-	} else {
-		#It's a global path
-		PROCESSED.PROJECT = dataDir
-	}
+	PROJECT.DIR = MakePath(code_dir, env_var = "CODEBASE", when_null = getwd)
+	PROCESSED.PROJECT = MakePath(data_dir, 
+		env_var = "PROCESSED", when_null = function() { PROJECT.DIR })
 
 	# Finalize the options.
-	options(PROJECT.DIR=PROJECT.DIR)
-	options(PROCESSED.PROJECT=PROCESSED.PROJECT)
+	options(PROJECT.DIR = PROJECT.DIR)
+	options(PROCESSED.PROJECT = PROCESSED.PROJECT)
 	setwd(getOption("PROJECT.DIR"));
-	message("PROJECT.DIR:", getOption("PROJECT.DIR"));
-	message("PROCESSED.PROJECT:", getOption("PROCESSED.PROJECT"));
-	# Set PROCESSED.PROJECT
+	message("PROJECT.DIR: ", getOption("PROJECT.DIR"));
+	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"));
 
 	init.dirs();
 	init.options();
@@ -66,21 +38,21 @@ project.init = function(code_dir=NULL, dataDir=NULL, RESOURCES=Sys.getenv("RESOU
 
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
-	project.scripts = c(paste0(getOption("PROJECT.DIR"), "src/00-init.R"), paste0(getOption("PROJECT.DIR"), "projectInit.R"))
-	initialized=FALSE;
+	init_script_path = file.path(getOption("PROJECT.DIR"), "src", "00-init.R")
+	project.scripts = c(init_script_path, 
+		file.path(getOption("PROJECT.DIR"), "projectInit.R"))
+	initialized = FALSE;
 	for (project.script in project.scripts) {
-		if (file.exists(project.script)) {
-			message("Initializing ", project.script, "...")
+		if (file_test("-f", project.script)) {
+			message(sprintf("Initializing: '%s'...", project.script))
 			source(project.script)
-			options(PROJECT.INIT=project.script);
-			initialized=TRUE;
+			options(PROJECT.INIT = project.script);
+			initialized = TRUE;
 			break;
 		}
 	}
 	if (!initialized) {
-		defaultInitScript = paste0(getOption("PROJECT.DIR"), "src/00-init.R")
-
-		message("Found no project init script. If you place a file in ", defaultInitScript,
+		message("Found no project init script. If you place a file in ", init_script_path,
 			", it will be loaded automatically when you initialize this project.")
 	}
 }
@@ -91,14 +63,17 @@ go = project.init
 
 #' Helper alias to re-run init script, using your current dir settings.
 project.refresh = function() { 
-	project.init(code_dir=getOption("PROJECT.DIR"), dataDir=getOption("PROCESSED.PROJECT"), RESOURCES=Sys.getenv("RESOURCES"))
+	project.init(code_dir = getOption("PROJECT.DIR"), 
+		data_dir = getOption("PROCESSED.PROJECT"), 
+		RESOURCES = Sys.getenv("RESOURCES"))
 }
 
 #' Helper alias for the common case where the data and code dirs share
 #' a name.
 #' @export
 project.init2 = function(code_dir) {
-	project.init(code_dir=code_dir, dataDir=code_dir, RESOURCES=Sys.getenv("RESOURCES"))
+	project.init(code_dir = code_dir, data_dir = code_dir, 
+		RESOURCES = Sys.getenv("RESOURCES"))
 }
 
 

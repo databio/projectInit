@@ -1,3 +1,5 @@
+library("utils")
+
 #' Loads a yaml config file
 #' @param project A project (use default config file names for this project)
 #' @param sp Subproject to activate
@@ -8,45 +10,38 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 		warning("Package yaml is required to load yaml config files.")
 		return
 	}
+	
 	if (is.null(project)) { 
 		projectDir = options("PROJECT.DIR")
 	} else {
-		projectDir = paste0(Sys.getenv("CODEBASE"), project)
+		codepath = Sys.getenv("CODEBASE")
+		projectDir = if(is.null(codepath) | identical("", codepath)) project else file.path(codepath, project)
 	}
+	
 	# If no file is specified, try these default locations
-	yamls = list("metadata/config.yaml",
-						"metadata/project_config.yaml",
-						paste0("metadata/", project, ".yaml"))
+	yamls = c("metadata/config.yaml", 
+		"metadata/project_config.yaml", 
+		file.path("metadata", sprintf("%s.yaml", project)))
 	
 	# DEBUG
 	sprintf(paste0(yamls, collapse=" "), file=stdout())
 
-	cfg = NULL
-	if (! is.null(filename)) {
+	# Prioritize given filename over defaults.
+	if (!is.null(filename)) {
 		yamls = c(filename, yamls)
 	}
 
-	for (yfile in yamls) {
-		if ( ! pathIsAbs(yfile) ) {
-			cfgFile = file.path(projectDir, yfile)
-		} else {
-			cfgFile = yfile
-		}
-		if (file.exists(cfgFile)) {
-			break
-		}
-	}
-	
-	cfg = yaml::yaml.load_file(cfgFile)
-
-	if (is.null(cfg)) {
+	cfgFile = FirstExtantFile(files = yamls, parent = projectDir)
+	if (is.null(cfgFile)) {
 		message("No config file found.")
 		return
 	}
+	
+	cfg = yaml::yaml.load_file(cfgFile)
 	message("Loaded config file: ", cfgFile)
 	
-	if (! is.null(sp)) {
-		# Update with subproject variables
+	if (!is.null(sp)) {
+		# Update with subproject variables.
 		spc = cfg$subprojects[[sp]]
 		if (is.null(spc)) {
 			message("Subproject not found: ", sp)
@@ -55,16 +50,17 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 		cfg = modifyList(cfg, cfg$subprojects[[sp]])
 		message("Loading subproject: ", sp)
 	}
-	# Show available subprojects
+	
+	# Show available subprojects.
 	sps = names(cfg$subprojects)
 	if (length(sps) > 1) { 
 		message("Available subprojects: ", paste0(sps, collapse=","))
 	}
 
-	# Make metadata absolute
+	# Make metadata absolute.
 	mdn = names(cfg$metadata)
 	for (n in mdn) {
-		if ( !pathIsAbs(cfg$metadata[n]) ) { 
+		if ( ! IsAbsolute(cfg$metadata[n]) ) { 
 			cfg$metadata[n] = file.path(dirname(cfgFile), cfg$metadata[n])
 		}
 	}
@@ -72,7 +68,25 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 	return(cfg)
 }
 
-pathIsAbs = function(path) {
-	return(substr(path, 1, 1) == "/")
+
+FirstExtantFile = function(files, parent) {
+	# Find the first extant file from a sequence of candidates.
+	#
+	# Args:
+	#   files: The sequence file names or paths to consider.
+	#   parent: Path to the folder to which each element considered 
+	#           should be joined if the element isn't absolute path.
+	#
+	# Returns:
+	#   (Absolute) path to the first element that exists. Null if 
+	#   no element considered resolves to valid filesystem location.
+	for (f in files) {
+		path = if(IsAbsolute(f)) f else file.path(parent, f)
+		if (file_test("-f", path)) return(path)
+	}
 }
 
+
+IsAbsolute = function(path) {
+	return(identical(path, normalizePath(path)))
+}
