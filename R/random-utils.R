@@ -43,10 +43,13 @@ SetOption = function(option, value, force = TRUE) {
 #' @param utilityDir Directory to search (custom)
 #' @export
 utility = function(utilities, utilityDir="") {
+  
   # Build a list of ordered directories to search for the utility.
   utilityDirs = c(utilityDir, getOption("PROJECT.DIR"), file.path(getOption("RGENOMEUTILS"), "R"));
+  
   for (u in utilities) {
     foundUtility = FALSE;
+    
     # Look for a directory with the utilities, and load it in priority order.
     for (d in utilityDirs) {
       
@@ -58,12 +61,15 @@ utility = function(utilities, utilityDir="") {
       utilitySource = file.path(d, u);
       if (file.exists(utilitySource)) { foundUtility = TRUE; break; }
     }
+    
     if (!foundUtility) {
       message("No utility found in dirs:", paste(utilityDirs, collapse = ";"));
       return(NULL);
     }
+    
     message("Loading utility: ", utilitySource);
     source(utilitySource);
+    
     # Keep this in options for renewProject();
     options(LOADED.UTILITIES = unique(append(getOption("LOADED.UTILITIES"), u)))
   }
@@ -115,11 +121,11 @@ init.dirs = function() {
   
   # Set defaults:
   SetOption("ROUT.DIR", file.path(getOption("PROCESSED.PROJECT"), "analysis"))
+
   # Global RData cache
-  SetOption("RESOURCES.RCACHE", file.path(Sys.getenv("RESOURCES"), "cache/RCache"))
+  SetOption("RESOURCES.RCACHE", file.path(Sys.getenv("RESOURCES"), "cache", "RCache"))
 
   # Project RData cache
-  # Now put it in the data folder
   SetOption("RCACHE.DIR", file.path(getOption("PROCESSED.PROJECT"), "RCache"));     
 
   # Should deprecate these ones:
