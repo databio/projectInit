@@ -27,14 +27,14 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 	}
 
 	ensure_abs = pryr::partial(MakeAbsPath, parent = project_dir)
-	cfgFile = FirstExtantFile(files = yamls, parent = project_dir, modify = ensure_abs)
-	if (!IsDefined(cfgFile)) {
+	cfg_file = FirstExtantFile(files = yamls, parent = project_dir, modify = ensure_abs)
+	if (!IsDefined(cfg_file)) {
 		message("No config file found.")
 		return()
 	}
 	
-	cfg = yaml::yaml.load_file(cfgFile)
-	message("Loaded config file: ", cfgFile)
+	cfg = yaml::yaml.load_file(cfg_file)
+	message("Loaded config file: ", cfg_file)
 	
 	if (!is.null(sp)) {
 		# Update with subproject variables.
@@ -54,12 +54,9 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 	}
 
 	# Make metadata absolute.
-	mdn = names(cfg$metadata)
-	for (n in mdn) {
-		if ( ! IsAbsolute(cfg$metadata[n]) ) { 
-			cfg$metadata[n] = file.path(dirname(cfgFile), cfg$metadata[n])
-		}
-	}
+	# TODO: consider an apply-like function already implemented here.
+	AbsViaParent = pryr::partial(MakeAbsPath, parent = dirname(cfg_file))
+	cfg$metadata = lapply(cfg$metadata, AbsViaParent)
 
 	return(cfg)
 }
