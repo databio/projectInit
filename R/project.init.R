@@ -182,93 +182,19 @@ nenv = function() {
 
 
 init.dirs = function() {
-# Set defaults:
-setOption("ROUT.DIR", paste0(getOption("PROCESSED.PROJECT"), "analysis/"));
-setOption("RESOURCES.RCACHE", paste0(Sys.getenv("RESOURCES"), "cache/RCache/"));		#Global RData cache
-#Project RData cache
-# Now put it in the data folder
-#setOption("RCACHE.DIR", paste0(getOption("PROJECT.DIR"), "RCache/")); 		
-setOption("RCACHE.DIR", paste0(getOption("PROCESSED.PROJECT"), "RCache/")); 		
+	
+	# Set defaults:
+	SetOption("ROUT.DIR", paste0(getOption("PROCESSED.PROJECT"), "analysis/"))
+	# Global RData cache
+	SetOption("RESOURCES.RCACHE", paste0(Sys.getenv("RESOURCES"), "cache/RCache/"))
 
-# Should deprecate these ones:
+	# Project RData cache
+	# Now put it in the data folder
+	SetOption("RCACHE.DIR", paste0(getOption("PROCESSED.PROJECT"), "RCache/")); 		
 
-setOption("RBUILD.DIR", paste0(getOption("PROJECT.DIR"), "RBuild/"));
-}
+	# Should deprecate these ones:
+	SetOption("RBUILD.DIR", paste0(getOption("PROJECT.DIR"), "RBuild/"));
 
-
-#' Sets an option value if it's not already set.
-#' Why only if it's not already set?
-#' @param option Name of option
-#' @param value Value to set it to
-#' @param force overwrite if already set.
-#' @export
-setOption = function(option, value, force=TRUE) {
-	# I can't remember why I made it default to not forcing, so I'm changing it.
-	if(is.null(getOption(option)) || force) {
-		optionsToSet = list(value)
-		names(optionsToSet) = option
-		options(optionsToSet)
-	}
-}
-
-
-#' ROUT Wrapper function
-#'
-#' pass a relative file path, and this will append the global results
-#' directory to it. Use it to stick output easily directly into the results
-#' directory, instead of relative to the local directory.
-#' This allows you to keep a working directory that's relative to your code,
-#' but put the results somewhere else (which is shared space).
-#' @export
-dirout = function(...) {
-	paste0(getOption("ROUT.DIR"), ...);
-}
-
-#' Helper function to silently create a subdirectory in the project
-#' output directory.
-#'
-#' @export
-createOutputSubdir = function(...) {
-	dir.create(dirout(...), showWarnings = FALSE, recursive = TRUE)
-
-}
-
-#' Helper function to silently create a subdirectory in the parent project
-#' directory (the processed data directory).
-#'
-#' @export
-createRootSubdir = function(...) {
-	dir.create(dirdata(...), showWarnings = FALSE, recursive = TRUE)
-
-}
-
-#' Data Dir
-#' Helper wrapper to get data for this project.
-#' @export
-dirdata = function(...) {
-	paste0(getOption("PROCESSED.PROJECT"), ...);
-}
-
-#' Raw Data Dir
-#' Helper wrapper to get data for this project.
-#' @export
-dirraw = function(...) {
-	paste0(Sys.getenv("RAWDATA"), ...);
-}
-
-
-#' Resource Dir
-#' Helper wrapper to get filesystem data for this project.
-#' @export
-dirres = function(...) {
-	paste0(Sys.getenv("RESOURCES"), ...);
-}
-
-#' Web directory
-#' Helper wrapper to get web data for this project.
-#' @export
-dirweb = function(...) {
-	paste0(Sys.getenv("WEB"), ...);
 }
 
 
@@ -302,7 +228,3 @@ init.utilities = function() {
 			RGENOMEUTILS pointing to the RGenomeUtils repo; I usually set this in my .Rprofile")
 	} 
 }
-
-
-
-

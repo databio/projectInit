@@ -1,19 +1,4 @@
-# Helper functions 
-
-
-Hint = function(varname) {
-  # Make suggestion about configuring an environment variable.
-  # 
-  # Args:
-  #   varname: Name of environment variable to suggest setting.
-  # 
-  # Returns:
-  #   Message about benefit of setting the given environment variable.
-  return(sprintf("You should set environment variable %s to use the 
-    shared R utils most effectively. Then you can refer to R projects 
-    with relative paths, making the code portable and sharable.", varname))
-}
-
+# Filesystem utilities
 
 #' Determine whether a path is absolute.
 #'
@@ -27,12 +12,25 @@ IsAbsolute = function(path) {
 }
 
 
-IsDefined = function(var) { ! (is.na(var) | is.null(var)) }
-
-
 MakeAbsPath = function(perhaps_relative, parent) {
-	if (IsAbsolute(perhaps_relative)) perhaps_relative
-	else file.path(parent, perhaps_relative)
+	# Create an absolute path from a primary target and a parent candidate.
+	# 
+	# Args:
+	#   perhaps_relative: Path to primary target directory.
+	#   parent: Path to parent folder to use if target isn't absolute.
+	#
+	# Returns:
+	#   Target itself if already absolute, else target nested within parent.
+	if (IsAbsolute(perhaps_relative)) {
+		abspath = perhaps_relative
+	} else {
+		abspath = file.path(parent, perhaps_relative)
+	}
+	if (!IsAbsolute(abspath)) {
+		errmsg = sprintf("No abspath from '%s' and '%s'", perhaps_relative, parent)
+		stop(errmsg)
+	}
+	return(abspath)
 }
 
 
