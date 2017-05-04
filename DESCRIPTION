@@ -8,7 +8,11 @@ Maintainer: Nathan Sheffield <yourfault@somewhere.net>
 Description: Just my personal package providing a few initialization functions
     that I use to create project-specific r environments.
 Imports:
+    data.table,
+    extrafont,
+    ggplot2,
     pryr,
+    simpleCache,
     yaml
 License: What license is it under?
 RoxygenNote: 6.0.1

@@ -75,13 +75,8 @@ FirstExtantFile = function(files, parent, modify = identity) {
 	# Returns:
 	#   (Absolute) path to the first element that exists. NA if 
 	#   no element considered resolves to valid filesystem location.
-
-	# DEBUG
-	write(sprintf("FILES: %s", paste0(files, collapse=", ")), file=stdout())
-	write(sprintf("PARENT: %s", parent), file=stdout())
-	write(sprintf("MODIFIED: %s", paste0(sapply(files, modify), collapse = ", ")), file=stderr())
 	modified = sapply(files, modify)
-	modified[which(sapply(modified, FileExists))[1]]
+	return(modified[which(sapply(modified, FileExists))[1]])
 }
 
 
