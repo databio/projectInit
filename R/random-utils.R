@@ -11,6 +11,7 @@ Hint = function(varname) {
     with relative paths, making the code portable and sharable.", varname))
 }
 
+
 IsDefined = function(var) { ! (is.na(var) | is.null(var)) }
 
 
