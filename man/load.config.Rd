@@ -16,4 +16,3 @@ load.config(project = NULL, sp = NULL, filename = NULL)
 \description{
 Loads a yaml config file
 }
-
