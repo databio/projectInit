@@ -7,28 +7,28 @@
 #' @family path operations
 #' @export
 IsAbsolute = function(path) {
-  first_char = substr(path, 1, 1)
-  return(identical("/", first_char) | identical("~", first_char))
+  firstChar = substr(path, 1, 1)
+  return(identical("/", firstChar) | identical("~", firstChar))
 }
 
 
-MakeAbsPath = function(perhaps_relative, parent) {
+MakeAbsPath = function(perhapsRelative, parent) {
     # Create an absolute path from a primary target and a parent candidate.
     #
     # Args:
-    #   perhaps_relative: Path to primary target directory.
+    #   perhapsRelative: Path to primary target directory.
     #   parent: Path to parent folder to use if target isn't absolute.
     #
     # Returns:
     #   Target itself if already absolute, else target nested within parent.
-    if (IsAbsolute(perhaps_relative)) {
-        abspath = perhaps_relative
+    if (IsAbsolute(perhapsRelative)) {
+        abspath = perhapsRelative
     } else {
-        abspath = file.path(parent, perhaps_relative)
+        abspath = file.path(parent, perhapsRelative)
     }
     if (!IsAbsolute(abspath)) {
         errmsg = sprintf("Relative path '%s' and parent '%s' failed to create
-            absolute path: '%s'", perhaps_relative, parent, abspath)
+            absolute path: '%s'", perhapsRelative, parent, abspath)
         stop(errmsg)
     }
     return(abspath)
@@ -45,14 +45,14 @@ MakeAbsPath = function(perhaps_relative, parent) {
 #'   \code{env_var} and (relative) \code{target}.
 #' @family path operations
 #' @export
-MakePath = function(target, env_var, when_null) {
+MakePath = function(target, envVar, whenNull) {
   
     if (is.null(target)) {
-        fullpath = when_null()
+        fullpath = whenNull()
         warning ("Using alternative for null target: ", fullpath);
     } else {
-        parent = Sys.getenv(env_var)
-        if (identical("", parent)) { stop(Hint(env_var)) }
+        parent = Sys.getenv(envVar)
+        if (identical("", parent)) { stop(Hint(envVar)) }
 
         if (IsAbsolute(target)) {
             fullpath = target
@@ -65,7 +65,7 @@ MakePath = function(target, env_var, when_null) {
     if (!IsAbsolute(fullpath)) {
         stop(sprintf("Could not make absolute path from primary
                 target %s and parent candidate %s (from %s)",
-                target, parent, env_var))
+                target, parent, envVar))
     }
     return(fullpath)
 }
