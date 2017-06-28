@@ -20,9 +20,9 @@ project.init = function(code_dir = NULL,
 			global environmental variable RESOURCES before calling.")
 	}
 
-	PROJECT.DIR = MakePath(code_dir, env_var = "CODE", when_null = getwd)
+	PROJECT.DIR = MakePath(code_dir, envVar = "CODE", whenNull = getwd)
 	PROCESSED.PROJECT = MakePath(data_dir, 
-		env_var = "PROCESSED", when_null = function() { PROJECT.DIR })
+		envVar = "PROCESSED", whenNull = function() { PROJECT.DIR })
 
 	# Finalize the options.
 	options(PROJECT.DIR = PROJECT.DIR)
