@@ -4,9 +4,10 @@
 \name{project.init}
 \alias{project.init}
 \alias{project.init-package}
+\alias{project.init}
 \title{Package docs}
 \usage{
-project.init(codeDir = NULL, dataDir = NULL,
+project.init(code_dir = NULL, data_dir = NULL,
   RESOURCES = Sys.getenv("RESOURCES"))
 }
 \description{
@@ -16,10 +17,9 @@ Define project init function
 All this does is source the 00-init.R script for the project,
 you pass a complete folder or a relative path.
 }
+\references{
+\url{http://github.com/nsheff}
+}
 \author{
 Nathan Sheffield
 }
-\references{
-\url{http://github.com/sheffien}
-}
-

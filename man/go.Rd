@@ -4,9 +4,8 @@
 \alias{go}
 \title{Make a secret alias function so I don't have to type so much}
 \usage{
-go(codeDir = NULL, dataDir = NULL, RESOURCES = Sys.getenv("RESOURCES"))
+go(code_dir = NULL, data_dir = NULL, RESOURCES = Sys.getenv("RESOURCES"))
 }
 \description{
 Make a secret alias function so I don't have to type so much
 }
-
