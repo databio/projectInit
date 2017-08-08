@@ -1,6 +1,9 @@
 library("pryr")
 library("utils")
 
+kOldPipelinesSection = "pipelines_dir"
+kRelativeSections = c("output_dir", kOldPipelinesSection, 
+	"pipeline_interfaces", "results_subdir", "submission_subdir")
 
 #' Loads a yaml config file
 #' @param project A project (use default config file names for this project)
@@ -130,7 +133,11 @@ MakeMetadataSectionAbsolute = function(config, usesPathsSection, parent) {
 	for (metadataAttribute in names(config$metadata)) {
 		value = config$metadata[[metadataAttribute]]
 
-		if (metadataAttribute %in% c("output_dir", "pipelines_dir", "results_subdir", "submission_subdir")) {
+		if (metadataAttribute %in% kRelativeSections) {
+			if (metadataAttribute == kOldPipelinesSection) {
+				warning(sprintf("Config contains old pipeline location specification 
+					section: '%s'", kOldPipelinesSection))
+			}
 			value = ExpandPath(value)
 			if (!IsAbsolute(value)) {
 				value = file.path(ExpandPath(config$metadata[["output_dir"]]), value)
