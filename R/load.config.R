@@ -179,8 +179,9 @@ MakeMetadataSectionAbsolute = function(config, usesPathsSection, parent) {
 
 		if (metadataAttribute %in% kRelativeSections) {
 			if (metadataAttribute == kOldPipelinesSection) {
-				warning(sprintf("Config contains old pipeline location specification 
-					section: '%s'", kOldPipelinesSection))
+				warning(sprintf(
+					"Config contains old pipeline location specification section: '%s'", 
+					kOldPipelinesSection))
 			}
 			value = ExpandPath(value)
 			if (!IsAbsolute(value)) {
