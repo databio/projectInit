@@ -4,7 +4,7 @@
 \alias{MakePath}
 \title{Determine whether a path is absolute.}
 \usage{
-MakePath(target, env_var, when_null)
+MakePath(target, envVar, whenNull)
 }
 \arguments{
 \item{target}{The path to check for seeming absolute-ness.}
