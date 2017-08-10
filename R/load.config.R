@@ -58,6 +58,7 @@ load.config = function(project=NULL, sp=NULL, filename=NULL) {
 	}
 
 	# Make metadata absolute
+	# This used to be all metadata columns; now it's just: results_subdir
 	mdn = names(cfg$metadata)
 	for (n in mdn) {
 		if ( !pathIsAbs(cfg$metadata[n]) ) { 
