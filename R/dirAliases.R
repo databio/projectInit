@@ -7,17 +7,11 @@
 #' but put the results somewhere else (such as a shared results space).
 #' @export
 dirOut = function(...) {
-	file.path(getOption("ROUT.DIR"), ...)
-}
-
-#' Direct a path into the project output subdirectory
-#'
-#' Same as dirOut(), but uses a subdir set by setOutputSubdir().
-#' @export
-dirOutSub = function(...) {
-	subdir = file.path(getOption("ROUT.DIR"), getOption("ROUT.SUBDIR"))
-	message("Subdir: ", subdir)
-	file.path(subdir, ...)
+	if (is.null(getOption("ROUT.SUBDIR"))) {
+		return(file.path(getOption("ROUT.DIR"), ...))
+	} else {
+		return(file.path(getOption("ROUT.DIR"), getOption("ROUT.SUBDIR"), ...))
+	}
 }
 
 #' Data Dir

@@ -35,9 +35,9 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 		project.init::setOutputSubdir(subDir)
 	}
 
-	PROJECT.DIR = makePath(codeDir, envVar="CODE", whenNull=getwd)
-	PROCESSED.PROJECT = makePath(dataDir, 
-		envVar="PROCESSED", whenNull=function() { PROJECT.DIR })
+	PROJECT.DIR = .getPath(codeDir, parentEnvVar="CODE", default=getwd())
+	PROCESSED.PROJECT = .getPath(dataDir, 
+		parentEnvVar="PROCESSED", default=PROJECT.DIR)
 
 	# Finalize the options.
 	options(PROJECT.DIR=PROJECT.DIR)
