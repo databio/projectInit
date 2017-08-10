@@ -32,12 +32,13 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 	}
 
 	if (!is.null(subDir)){
+		.nicemsg("Found subdir: ", subDir)
 		project.init::setOutputSubdir(subDir)
 	}
 
-	PROJECT.DIR = .getPath(codeDir, parentEnvVar="CODE", default=getwd())
-	PROCESSED.PROJECT = .getPath(dataDir, 
-		parentEnvVar="PROCESSED", default=PROJECT.DIR)
+	PROJECT.DIR = .selectPath(codeDir, parent=.niceGetEnv("CODE"), default=getwd())
+	PROCESSED.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
+		default=PROJECT.DIR)
 
 	# Finalize the options.
 	options(PROJECT.DIR=PROJECT.DIR)
@@ -66,9 +67,10 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 		}
 	}
 	if (!initialized) {
-		message(strwrap("Found no project init script. If you place a file in ",
+		msg = paste0("Found no project init script. If you place a file in ",
 		initScriptPath, ", it will be loaded automatically when you initialize
-		this project."))
+		this project.")
+		.nicemsg(msg)
 	}
 }
 #' Alias for backward compatibility
@@ -149,6 +151,7 @@ penv = function() {
 		"RCACHE.DIR",
 		"RBUILD.DIR",
 		"ROUT.DIR",
+		"ROUT.SUBDIR",
 		"RGENOMEUTILS")
 	value = sapply(nShareOptionsList, getOption)
 	rbind(cbind(envVarsValues), cbind(value))

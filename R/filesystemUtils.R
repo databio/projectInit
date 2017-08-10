@@ -12,7 +12,7 @@ isAbsolute = function(path) {
 }
 
 
-# Create an absolute path from a primary target and a parent candidate.
+#' Create an absolute path from a primary target and a parent candidate.
 #
 #' @param perhapsRelative: Path to primary target directory.
 #' @param  parent: Path to parent folder to use if target isn't absolute.
@@ -34,6 +34,20 @@ makeAbsPath = function(perhapsRelative, parent) {
 }
 
 
+ #' Make suggestion about configuring an environment variable.
+ #' @param varname	Name of environment variable to suggest setting.
+ #' @return	Message about benefit of setting the given environment variable.
+.niceGetEnv = function(varname) {
+	value = Sys.getenv(varname)
+	if (identical("", value)) {
+		warning(.nicetxt(sprintf("You should set environment variable %s to use the 
+		shared R utils most effectively. Then you can refer to R projects 
+		with relative paths, making the code portable and sharable.", varname)))
+	}
+	return(value)
+}
+
+
 #' Returns a full path
 #'
 #' @param target The path to check for seeming absolute-ness.
@@ -43,19 +57,16 @@ makeAbsPath = function(perhapsRelative, parent) {
 #'   if \code{target} is null, or joined version of parent candidate stored in 
 #'   \code{env_var} and (relative) \code{target}.
 #' @family path operations
-.getPath = function(target, parentEnvVar, default) {
+.selectPath = function(target, parent, default) {
 	if (is.null(target)) {
 		fullpath = default
-		warning ("Using alternative for null target: ", fullpath);
+		warning("Using alternative for null target: ", fullpath)
 	} else {
-		parent = Sys.getenv(parentEnvVar)
-		if (identical("", parent)) { stop(.hint(parentEnvVar)) }
-
 		if (isAbsolute(target)) {
-			fullpath = target
-		} else {
-			fullpath = file.path(parent, target)
-		}
+		fullpath = target
+	} else {
+		fullpath = file.path(parent, target)
+	}
 	}
 
 	if (!isAbsolute(fullpath)) {

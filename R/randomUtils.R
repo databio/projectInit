@@ -1,11 +1,3 @@
- #' Make suggestion about configuring an environment variable.
- #' @param varname	Name of environment variable to suggest setting.
- #' @return	Message about benefit of setting the given environment variable.
-.hint = function(varname) {
-	return(sprintf("You should set environment variable %s to use the 
-		shared R utils most effectively. Then you can refer to R projects 
-		with relative paths, making the code portable and sharable.", varname))
-}
 
 
 .isDefined = function(var) { ! (is.na(var) | is.null(var)) }
@@ -58,4 +50,17 @@
 		message("You can connect the RGenomeUtils if you set an option named 
 			RGENOMEUTILS pointing to the RGenomeUtils repo; I usually set this in my .Rprofile")
 	} 
+}
+
+
+.nicetxt = function(...) {
+	paste(strwrap(paste(..., collapse=" ")), collapse="\n")
+}
+
+.nicewrn = function(...) {
+	warning(.nicetxt(...))
+}
+
+.nicemsg = function(...) { 
+	message(.nicetxt(...))
 }
