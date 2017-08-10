@@ -16,18 +16,8 @@ project.init = function(code_dir = NULL,
 	data_dir = NULL, RESOURCES = Sys.getenv("RESOURCES")) {
 	
 	if (identical("", RESOURCES) | is.null(RESOURCES)) {
-		stop ("Supply RESOURCES argument to project.init() or set 
-			global environmental variable RESOURCES before calling.")
-	}
-
-
-
-	if (is.null(data_dir)) {
-		# Assume that a null data directory means to use the code_dir variable.
-		# This was previously accomplished with project.init2, but that is
-		# not actually necessary with this update.
-		data_dir = code_dir
-
+		stop(strwrap("Supply RESOURCES argument to project.init() or set 
+			global environmental variable RESOURCES before calling."))
 	}
 
 	PROJECT.DIR = MakePath(code_dir, envVar = "CODE", whenNull = getwd)
@@ -50,20 +40,20 @@ project.init = function(code_dir = NULL,
 	init_script_path = file.path(getOption("PROJECT.DIR"), "src", "00-init.R")
 	project.scripts = c(init_script_path, 
 		file.path(getOption("PROJECT.DIR"), "projectInit.R"))
-	initialized = FALSE
+	initialized = FALSE;
 	for (project.script in project.scripts) {
 		if (file_test("-f", project.script)) {
 			message(sprintf("Initializing: '%s'...", project.script))
 			source(project.script)
-			options(PROJECT.INIT = project.script)
-			initialized = TRUE
-			break
+			options(PROJECT.INIT = project.script);
+			initialized = TRUE;
+			break;
 		}
 	}
 	if (!initialized) {
 		message(strwrap("Found no project init script. If you place a file in ",
-			init_script_path, ", it will be loaded automatically when you
-			initialize this project."))
+		init_script_path, ", it will be loaded automatically when you initialize
+		this project."))
 	}
 }
 
@@ -93,4 +83,64 @@ rp = function() {
 		stop("No loaded project.")
 	}
 	project.init(getOption("PROJECT.DIR"), getOption("PROCESSED.PROJECT"))
+}
+
+
+#######################################################################
+# Populate default local directories
+#######################################################################
+# these should not need to change, unless
+# you want to adjust the default relative folder directory structure
+
+#'@export
+nenv = function() {
+	# env variables
+	envVars = c("RAWDATA", "PROCESSED", "RESOURCES", "WEB", "CODE")
+	envVarsValues = sapply(envVars, Sys.getenv)
+	
+	nShareOptionsList = c("PROJECT.DIR", "PROJECT.INIT", 
+		"PROCESSED.PROJECT",
+		"RESOURCES.RCACHE",
+		"RCACHE.DIR",
+		"RBUILD.DIR",
+		"ROUT.DIR",
+		"RGENOMEUTILS")
+	value = sapply(nShareOptionsList, getOption)
+	rbind(cbind(envVarsValues), cbind(value))
+}
+
+
+init.dirs = function() {
+	# Set defaults:
+	SetOption("ROUT.DIR", paste0(getOption("PROCESSED.PROJECT"), "analysis/"))
+	# Global RData cache
+	SetOption("RESOURCES.RCACHE", paste0(Sys.getenv("RESOURCES"), "cache/RCache/"))
+
+	# Project RData cache
+	# Now put it in the data folder
+	SetOption("RCACHE.DIR", paste0(getOption("PROCESSED.PROJECT"), "RCache/")); 		
+
+	# Should deprecate these ones:
+	SetOption("RBUILD.DIR", paste0(getOption("PROJECT.DIR"), "RBuild/"));
+}
+
+
+# Load basic options (non-project-specific).
+
+init.options = function() {
+	# It drives me nuts when strings get processed as factors.
+	options(stringsAsFactors=FALSE);			# treat strings as strings
+	options(echo=TRUE);							# show commands (?)
+	options(menu.graphics=FALSE);				# suppress gui selection
+	options(width=130);							# Optimized for full screen width
+	options(scipen=15); 						# turn off scientific notation
+}
+
+init.utilities = function() {
+	if (! is.null(getOption("RGENOMEUTILS")) ) {
+		devtools::load_all(getOption("RGENOMEUTILS"))
+	} else {
+		message("You can connect the RGenomeUtils if you set an option named 
+			RGENOMEUTILS pointing to the RGenomeUtils repo; I usually set this in my .Rprofile")
+	} 
 }
