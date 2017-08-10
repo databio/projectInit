@@ -121,8 +121,9 @@ refreshPackage = function(pkg, path=Sys.getenv("CODE"),
 		Rcpp::compileAttributes(packageDir)
 	}
 	if (roxygenize) {
-		requireNamespace("roxygen2")
-		roxygen2::roxygenize(packageDir)
+		#requireNamespace("roxygen2")
+		#roxygen2::roxygenize(packageDir)
+		devtools::document(packageDir)
 	}
 	# devtools::unload is superior because it also unloads dlls, so this
 	# function could work with packages containing c++ code.
