@@ -1,13 +1,15 @@
 Package: project.init
 Type: Package
-Title: Set up standardized R workspaces for different projects
+Title: Set up standardized R workspaces for individual projects
 Version: 0.2.0
 Date: 2015-05-18
 Authors@R: c(person("Nathan", "Sheffield", email = "nathan@code.databio.org",
     role = c("aut", "cre")))
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
-Description: Just my personal package providing a few initialization functions
-    that I use to create project-specific r environments.
+Description: Makes it easy to initialize a customized workspace, relying on
+	shell environment variables to point easy function aliases so you can control
+	project-specific results directories, data inputs, shared temporary files, and
+	other resources
 Imports:
     pryr,
     yaml
