@@ -10,5 +10,5 @@ Description: Just my personal package providing a few initialization functions
 Imports:
     pryr,
     yaml
-License: What license is it under?
+License: GPL-3
 RoxygenNote: 6.0.1
