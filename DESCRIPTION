@@ -13,8 +13,11 @@ Description: Makes it easy to initialize a customized workspace, relying on
 Imports:
     pryr,
     yaml
+Suggests:
+	knitr
 Enhances:
 	Rcpp,
 	roxygen2
+VignetteBuilder: knitr
 License: GPL-3
 RoxygenNote: 6.0.1

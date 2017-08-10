@@ -1,0 +1,106 @@
+---
+title: "An introduction to projectInit"
+author: "Nathan Sheffield"
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{An introduction to projectInit}
+output: knitr:::html_vignette
+---
+
+# An introduction to projectInit
+
+`project.init` is an R package that helps you load a project-specific R workspace. It reads environment variables to coordinate your working directory, code location, raw data folders, and output folders. It then provides universal function so you don't have to worry about keeping track of annoying file path bookkeeping, but can concentrate on your R code instead. This lets you easily work in different environments and share inputs and outputs across sessions and across users.
+
+## Environment setup
+
+The package relies on shell environment variables you have set up to define where you store different classes of data (*e.g.* input data, output plots, code, shared resources, etc.).  The specific variables used by `projectInit` are:
+
+**$CODE** - Pointer to the collection of project folders where code is kept (*e.g.* each folder a git repository)
+**$PROCESSED** - Pointer to the common shared resources directory
+**$RESOURCES** - Pointer to the 'processed data' filesystem
+
+So, for instance, you could add this to your `.bashrc` to populate these locations for your computing environment:
+
+```{bash, eval=FALSE}
+export PROCESSED="/path/to/processed/data/"
+export CODE="$HOME/code/"
+export RESOURCES="/path/to/resources/"
+```
+
+## Getting started
+
+A data analysis project is a collection of R scripts. We assume that you have a folder for each project where you keep these R scripts. Start each script with this code:
+
+```
+projectInit("project_name")
+```
+
+This will do a number of things:
+
+1. Changes your working directory to ${CODE}/project_name
+
+2. Populates an output variable to ${PROCESSED}/project_name
+
+3. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/00-init.R`.
+
+4. Populates a project-level cache directory at `${PROCESSED}/project_name/RCache`. This variable is read as the default by R package `simpleCache`, so your caches will now be stored in a specified cache directory for this project.
+
+With these environment variables set, you now have access to easy functions to locate input and direct output without worrying about file paths. 
+
+## Initialization script
+
+In the init script (by default at `${CODE}/project_name/00-init.R`), you should put whatever `library()` calls or other things you need that you want to be loaded all the time, for every script in this project. This is also where I define project-level functions that I want to use multiple times in the project, and where I load up project metadata (like sample annotation sheets) and other configuration options.
+
+## Output path functions
+
+For example, try:
+
+```
+dirOut()
+```
+
+You can use this convenient function for all your plots. Instead of passing your filename directly to the `pdf()` function, run it through `dirOut()` to automatically save it in the project-specific output directory like this:
+
+```
+pdf(dirOut("filename.pdf"))
+plot(1)
+dev.off()
+```
+
+The beauty of this is portability: if you change projects or locations, or share this script with others, the code will just work, putting the plot in the correct location. If you had hard-coded the path everywhere, you'd have to change all that to lift code to a new project or to change compute environments, or if you changed the project output folder.
+
+You can also extend this easily with subfolders. When projects become large, it's useful to divide them into components. For example, I usually organize my R scripts around figures for a scientific paper, so all my scripts that produce panels or supporting information for figure 1 belong together, and so on. There may be a dozen scripts for each figure, and I'd like to easily include all the related output files in a separate subfolder. I can accomplish this like this. For all scripts relevant to figure 1, I use this code at the top of each script:
+
+
+```
+projectInit("project_name")
+setOutputSubdir("fig1_clustering")
+```
+
+Now in these scripts when I use `dirOut()`, it's smart enough to automatically place these figures in an appropriate subfolder:
+
+```
+dirOut()
+```
+
+## Data path functions
+
+You get similar functions to easily access project-specific data, if you need it:
+
+```
+dirData()
+```
+
+You can get a quick look at all the variables populated with the project environment function, `penv`:
+
+```
+penv()
+```
+
+
+## Caching
+
+When we run `projectInit()`, one of the results is that we've populated a global variable to point to a project-level cache directory (which by default is located at `${PROCESSED}/project_name/RCache`). Now, any calls to `simpleCache()` will automatically store and load caches from this directory. Since this is a shared, group-level space, anyone running the script on the same computing environment will be able to share caches. So any cached compute needs only be done once; even another user can re-use those caches.
+
+Furthermore, it sets a global cache directory (by default at `${RESOURCES}/cache/RCache`), which will automatically be used for global caches by `simpleCache::simpleCacheShared()`. This lets you share caches across projects with ease.

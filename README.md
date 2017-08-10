@@ -1,16 +1,16 @@
 # project.init
 
-`project.init` is an R package that helps you create self-contained project repositories. It's like an R project manager. It just sets up your R environment, connects you to data and code by providing easy-to-use shortcut functions.
+`project.init` is an R package that helps you load a project-specific R workspace. It reads environment variables to coordinate your working directory, code location, raw data folders, and output folders. It then provides universal function so you don't have to worry about keeping track of annoying file path bookkeeping, but can concentrate on your R code instead. This lets you easily work in different environments and share inputs and outputs across sessions and across users.
 
 ## Environment
 
-`project.init` uses environment variables to enable portablility across systems and users. You should set up 3 environment variables to use `project.init` most effectively: `CODEBASE`, `RESOURCES`, and `PROCESSED`.
+`project.init` uses environment variables to enable portablility across systems and users. You should set up 3 environment variables to use `project.init` most effectively: `CODE`, `RESOURCES`, and `PROCESSED`.
 
 For example, in my environment, I use this to my `.bashrc`:
 
 ```
 # Pointer to the collection of git repos
-export CODEBASE="$HOME/code/"
+export CODE="$HOME/code/"
 
 # Pointer to the common shared resources directory
 export RESOURCES="/scratch/ns5bc/resources/"
