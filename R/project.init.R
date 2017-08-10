@@ -27,14 +27,13 @@ project.init = function(code_dir = NULL,
 	# Finalize the options.
 	options(PROJECT.DIR = PROJECT.DIR)
 	options(PROCESSED.PROJECT = PROCESSED.PROJECT)
-	setwd(getOption("PROJECT.DIR"));
-	message("PROJECT.DIR: ", getOption("PROJECT.DIR"));
-	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"));
+	setwd(getOption("PROJECT.DIR"))
+	message("PROJECT.DIR: ", getOption("PROJECT.DIR"))
+	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"))
 
-	init.dirs();
-	init.options();
-	init.packages();
-	init.utilities();
+	init.dirs()
+	init.options()
+	init.utilities()
 
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
@@ -209,18 +208,6 @@ init.options = function() {
 	options(width=130);							# Optimized for full screen width
 	options(scipen=15); 						# turn off scientific notation
 }
-
-
-# Load common packages
-init.packages = function() {
-	message("init.packages() ...");
-	library(devtools)
-	library(data.table, quietly=TRUE);
-	library(extrafont);
-	library(simpleCache);
-	library(ggplot2);
-}
-
 
 init.utilities = function() {
 	if (! is.null(getOption("RGENOMEUTILS")) ) {

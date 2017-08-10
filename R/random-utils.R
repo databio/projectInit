@@ -134,7 +134,6 @@ init.dirs = function() {
 
 }
 
-
 # Load basic options (non-project-specific).
 init.options = function() {
   # It drives me nuts when strings get processed as factors.
@@ -144,18 +143,6 @@ init.options = function() {
   options(width = 130);                 # optimized for full screen width
   options(scipen = 15);                 # turn off scientific notation
 }
-
-
-# Load common packages
-init.packages = function() {
-  message("init.packages() ...");
-  library(devtools)
-  library(data.table, quietly = TRUE);
-  library(extrafont);
-  library(simpleCache);
-  library(ggplot2);
-}
-
 
 init.utilities = function() {
   if (! is.null(getOption("RGENOMEUTILS")) ) {
