@@ -1,7 +1,7 @@
 Package: project.init
 Type: Package
 Title: Makes it easy to create R environments for different projects
-Version: 0.1.0
+Version: 0.2.0
 Date: 2015-05-18
 Author: Nathan Sheffield
 Maintainer: Nathan Sheffield <yourfault@somewhere.net>
