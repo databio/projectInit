@@ -1,4 +1,4 @@
-Hint = function(varname) {
+hint = function(varname) {
 	# Make suggestion about configuring an environment variable.
 	# 
 	# Args:
@@ -12,7 +12,7 @@ Hint = function(varname) {
 }
 
 
-IsDefined = function(var) { ! (is.na(var) | is.null(var)) }
+isDefined = function(var) { ! (is.na(var) | is.null(var)) }
 
 
 #' Sets an option value if it's not already set.
@@ -20,8 +20,7 @@ IsDefined = function(var) { ! (is.na(var) | is.null(var)) }
 #' @param option Name of option
 #' @param value Value to set it to
 #' @param force overwrite if already set.
-#' @export
-SetOption = function(option, value, force = TRUE) {
+.setOption = function(option, value, force = TRUE) {
 	if(is.null(getOption(option)) || force) {
 		optionsToSet = list(value)
 		names(optionsToSet) = option
@@ -58,26 +57,26 @@ penv = function() {
 
 initDirs = function() {
 		# Set defaults:
-	SetOption("ROUT.DIR", file.path(getOption("PROCESSED.PROJECT"), "analysis"))
+	.setOption("ROUT.DIR", file.path(getOption("PROCESSED.PROJECT"), "analysis"))
 
 	# Global RData cache
-	SetOption("RESOURCES.RCACHE", file.path(Sys.getenv("RESOURCES"), "cache", "RCache"))
+	.setOption("RESOURCES.RCACHE", file.path(Sys.getenv("RESOURCES"), "cache", "RCache"))
 
 	# Project RData cache
-	SetOption("RCACHE.DIR", file.path(getOption("PROCESSED.PROJECT"), "RCache")) 
+	.setOption("RCACHE.DIR", file.path(getOption("PROCESSED.PROJECT"), "RCache")) 
 
 	# Should deprecate these ones:
-	SetOption("RBUILD.DIR", file.path(getOption("PROJECT.DIR"), "RBuild"))
+	.setOption("RBUILD.DIR", file.path(getOption("PROJECT.DIR"), "RBuild"))
 }
 
 # Load basic options (non-project-specific).
 initOptions = function() {
 	# It drives me nuts when strings get processed as factors.
-	options(stringsAsFactors = FALSE)    # treat strings as strings
-	options(echo = TRUE)                 # show commands (?)
-	options(menu.graphics = FALSE)       # suppress gui selection
-	options(width = 130)                 # optimized for full screen width
-	options(scipen = 15)                 # turn off scientific notation
+	options(stringsAsFactors=FALSE)    # treat strings as strings
+	options(echo=TRUE)                 # show commands (?)
+	options(menu.graphics=FALSE)       # suppress gui selection
+	options(width=130)                 # optimized for full screen width
+	options(scipen=15)                 # turn off scientific notation
 }
 
 initUtilities = function() {
