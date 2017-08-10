@@ -65,17 +65,16 @@ init.dirs = function() {
 
   # Should deprecate these ones:
   SetOption("RBUILD.DIR", file.path(getOption("PROJECT.DIR"), "RBuild"));
-
 }
 
 # Load basic options (non-project-specific).
 init.options = function() {
   # It drives me nuts when strings get processed as factors.
-  options(stringsAsFactors = FALSE);    # treat strings as strings
-  options(echo = TRUE);                 # show commands (?)
-  options(menu.graphics = FALSE);       # suppress gui selection
-  options(width = 130);                 # optimized for full screen width
-  options(scipen = 15);                 # turn off scientific notation
+  options(stringsAsFactors = FALSE)    # treat strings as strings
+  options(echo = TRUE)                 # show commands (?)
+  options(menu.graphics = FALSE)       # suppress gui selection
+  options(width = 130)                 # optimized for full screen width
+  options(scipen = 15)                 # turn off scientific notation
 }
 
 init.utilities = function() {

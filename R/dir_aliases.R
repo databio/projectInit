@@ -1,5 +1,3 @@
-
-
 #' ROUT Wrapper function
 #'
 #' pass a relative file path, and this will append the global results
@@ -9,7 +7,7 @@
 #' but put the results somewhere else (which is shared space).
 #' @export
 dirout = function(...) {
-	file.path(getOption("ROUT.DIR"), ...);
+	file.path(getOption("ROUT.DIR"), ...)
 }
 
 #' Helper function to silently create a subdirectory in the project
@@ -18,13 +16,13 @@ dirout = function(...) {
 #' @export
 createOutputSubdir = function(...) {
 	dir.create(dirout(...), showWarnings = FALSE, recursive = TRUE)
-
 }
+
 #' Creates and sets outputSubdir
 #' @export
 setOutputSubdir = function(...) {
 	dir.create(dirout(...), showWarnings = FALSE, recursive = TRUE)
-	SetOption("ROUT.SUBDIR", ...);
+	SetOption("ROUT.SUBDIR", ...)
 }
 
 #' as dirout() but uses a subdir set by setOutputSubdir().
@@ -32,10 +30,8 @@ setOutputSubdir = function(...) {
 diroutsub = function(...) {
 	subdir = file.path(getOption("ROUT.DIR"), getOption("ROUT.SUBDIR"))
 	message("Subdir: ", subdir)
-	file.path(subdir, ...);
+	file.path(subdir, ...)
 }
-
-
 
 #' Helper function to silently create a subdirectory in the parent project
 #' directory (the processed data directory).
@@ -50,14 +46,14 @@ createRootSubdir = function(...) {
 #' Helper wrapper to get data for this project.
 #' @export
 dirdata = function(...) {
-	file.path(getOption("PROCESSED.PROJECT"), ...);
+	file.path(getOption("PROCESSED.PROJECT"), ...)
 }
 
 #' Raw Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
 dirraw = function(...) {
-	file.path(Sys.getenv("RAWDATA"), ...);
+	file.path(Sys.getenv("RAWDATA"), ...)
 }
 
 
@@ -65,13 +61,13 @@ dirraw = function(...) {
 #' Helper wrapper to get data for this project.
 #' @export
 dirres = function(...) {
-	file.path(Sys.getenv("RESOURCES"), ...);
+	file.path(Sys.getenv("RESOURCES"), ...)
 }
 
 #' Web Dir
 #' Helper wrapper to get data for this project.
 #' @export
 dirweb = function(...) {
-	file.path(Sys.getenv("WEB"), ...);
+	file.path(Sys.getenv("WEB"), ...)
 }
 

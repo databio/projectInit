@@ -45,14 +45,15 @@ project.init = function(code_dir = NULL,
 		if (file_test("-f", project.script)) {
 			message(sprintf("Initializing: '%s'...", project.script))
 			source(project.script)
-			options(PROJECT.INIT = project.script);
-			initialized = TRUE;
-			break;
+			options(PROJECT.INIT = project.script)
+			initialized = TRUE
+			break
 		}
 	}
 	if (!initialized) {
-		message("Found no project init script. If you place a file in ", init_script_path,
-			", it will be loaded automatically when you initialize this project.")
+		message(strwrap("Found no project init script. If you place a file in ",
+			init_script_path, ", it will be loaded automatically when you
+			initialize this project."))
 	}
 }
 
@@ -76,21 +77,24 @@ project.init2 = function(code_dir) {
 }
 
 
-# If you make changes to a utility script and want to reload it, this will reset all the utilities, and reset you to the CWD.
+# If you make changes to a utility script and want to reload it, this will reset
+# all the utilities, and reset you to the CWD.
+
 renewProject = function() {
-	clearLoadFunctions("PROJECT.VARS");
-	clearLoadFunctions("SHARE.VARS");
+	clearLoadFunctions("PROJECT.VARS")
+	clearLoadFunctions("SHARE.VARS")
 	loadedUtilities = unique(getOption("LOADED.UTILITIES"))
 	options(LOADED.UTILITIES=NULL)
 	saveWorkingDir = getwd();
-	tryCatch( { source(getOption("PROJECT.INIT")); }, 
-		error = function (e) { 
+	tryCatch( { 
+		source(getOption("PROJECT.INIT")) 
+		}, error = function (e) { 
 			message("Sourcing project.init failed:", e) 
 		} )
 	utToLoad = setdiff(loadedUtilities, unique(getOption("LOADED.UTILITIES")))
-	lapply(utToLoad, utility); #reload previously loaded utilities
-	setwd(saveWorkingDir);
-	message(saveWorkingDir);
+	lapply(utToLoad, utility)  # reload previously loaded utilities
+	setwd(saveWorkingDir)
+	message(saveWorkingDir)
 }
 
 
