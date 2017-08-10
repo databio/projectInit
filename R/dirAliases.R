@@ -13,9 +13,9 @@ dirOut = function(...) {
 			"consider invoking 'projectInit' to establish that and other options.")
 	}
 	if (is.null(getOption("ROUT.SUBDIR"))) {
-		return(file.path(outdir, ...))
+		return(dirWrapOpt("ROUT.DIR", ...))
 	} else {
-		return(file.path(outdir, getOption("ROUT.SUBDIR"), ...))
+		return(dirWrapOpt("ROUT.DIR", sub="ROUT.SUBDIR", ...))
 	}
 }
 
@@ -23,21 +23,21 @@ dirOut = function(...) {
 #' Helper wrapper to get data for this project.
 #' @export
 dirData = function(...) {
-	file.path(getOption("PROCESSED.PROJECT"), ...)
+	dirWrapOpt("PROCESSED.PROJECT", ...)
 }
 
 #' Raw Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
 dirRaw = function(...) {
-	file.path(Sys.getenv("RAWDATA"), ...)
+	dirWrap("RAWDATA", ...)
 }
 
 #' Resource Dir
 #' Helper wrapper to get data for this project.
 #' @export
 dirRes = function(...) {
-	file.path(Sys.getenv("RESOURCES"), ...)
+	dirWrap("RESOURCES", ...)
 }
 
 #' Web Dir
@@ -49,13 +49,27 @@ dirWeb = function(...) {
 
 #' Generic function to prepend an environment variable directory
 #' to your relative filepath.
-dirWrap = function(var, sub=NULL, ...) {
+dirWrap = function(var, ..., sub=NULL) {
 	if (is.null(sub)) {
-		outputPath = file.path(Sys.getenv(var), ...)
+		outputPath = file.path(Sys.getenv(var), paste0(...))
 	} else {
-		outputPath = file.path(Sys.getenv(var), sub, ...)
+		outputPath = file.path(Sys.getenv(var), sub, paste0(...))
 	}
+	return(outputPath)
 }
+
+# TODO: Standardize to options or envvars?
+# Uses options instead of envs.
+dirWrapOpt = function(var, ..., sub=NULL) {
+	if (is.null(sub)) {
+		outputPath = file.path(getOption(var), paste0(...))
+	} else {
+		outputPath = file.path(getOption(var), sub, paste0(...))
+	}
+	return(outputPath)
+}
+
+
 
 
 #' Helper function to silently create a subdirectory in the project
