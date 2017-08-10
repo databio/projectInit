@@ -1,18 +1,14 @@
-hint = function(varname) {
-	# Make suggestion about configuring an environment variable.
-	# 
-	# Args:
-	#   varname: Name of environment variable to suggest setting.
-	# 
-	# Returns:
-	#   Message about benefit of setting the given environment variable.
+ #' Make suggestion about configuring an environment variable.
+ #' @param varname	Name of environment variable to suggest setting.
+ #' @return	Message about benefit of setting the given environment variable.
+.hint = function(varname) {
 	return(sprintf("You should set environment variable %s to use the 
 		shared R utils most effectively. Then you can refer to R projects 
 		with relative paths, making the code portable and sharable.", varname))
 }
 
 
-isDefined = function(var) { ! (is.na(var) | is.null(var)) }
+.isDefined = function(var) { ! (is.na(var) | is.null(var)) }
 
 
 #' Sets an option value if it's not already set.
@@ -28,34 +24,10 @@ isDefined = function(var) { ! (is.na(var) | is.null(var)) }
 	}
 }
 
-#######################################################################
 # Populate default local directories
-#######################################################################
 # These need not change, unless you want to adjust
 # the default relative folder directory structure.
-
-#' Show project environment variables
-#'
-#' Displays the environment variables that are set and used by this package.
-#'@export
-penv = function() {
-	# env variables
-	envVars = c("RAWDATA", "PROCESSED", "RESOURCES", "WEB", "CODE")
-	envVarsValues = sapply(envVars, Sys.getenv)
-	
-	nShareOptionsList = c("PROJECT.DIR", "PROJECT.INIT", 
-		"PROCESSED.PROJECT",
-		"RESOURCES.RCACHE",
-		"RCACHE.DIR",
-		"RBUILD.DIR",
-		"ROUT.DIR",
-		"RGENOMEUTILS")
-	value = sapply(nShareOptionsList, getOption)
-	rbind(cbind(envVarsValues), cbind(value))
-}
-
-
-initDirs = function() {
+.initDirs = function() {
 		# Set defaults:
 	.setOption("ROUT.DIR", file.path(getOption("PROCESSED.PROJECT"), "analysis"))
 
@@ -70,7 +42,7 @@ initDirs = function() {
 }
 
 # Load basic options (non-project-specific).
-initOptions = function() {
+.initOptions = function() {
 	# It drives me nuts when strings get processed as factors.
 	options(stringsAsFactors=FALSE)    # treat strings as strings
 	options(echo=TRUE)                 # show commands (?)
@@ -79,7 +51,7 @@ initOptions = function() {
 	options(scipen=15)                 # turn off scientific notation
 }
 
-initUtilities = function() {
+.initUtilities = function() {
 	if (! is.null(getOption("RGENOMEUTILS")) ) {
 		devtools::load_all(getOption("RGENOMEUTILS"))
 	} else {

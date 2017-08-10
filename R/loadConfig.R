@@ -15,7 +15,7 @@ loadConfig = function(project=NULL, sp = NULL, filename=NULL, usesPathsSectio =F
 	# Load the project configuration file.
 	cfgFile = findConfigFile(projectFolder = projectDir,
 		nameConfigFile = filename, projectName = project)
-	if (!IsDefined(cfgFile)) {
+	if (!isDefined(cfgFile)) {
 		message("No config file found.")
 		return()
 	}
@@ -96,7 +96,7 @@ assemblyByOrganism = function(config) {
 
 expandPath = function(path) {
 	# Handle null/empty input.
-	if (!IsDefined(path)) { return(path) }
+	if (!isDefined(path)) { return(path) }
 
 	# Helper functions
 	chopPath = function(p) { if (p == dirname(p)) p else c(chopPath(dirname(p)), basename(p)) }

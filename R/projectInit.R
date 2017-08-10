@@ -15,36 +15,40 @@ NULL
 #'
 #' @param codeDir	
 #' @export
-projectInit = function(codeDir=NULL, 
-	dataDir=NULL, resources=Sys.getenv("RESOURCES")) {
+projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
+						resources=Sys.getenv("RESOURCES")) {
 
 	if (identical("", resources) | is.null(resources)) {
 		stop(strwrap("Supply RESOURCES argument to project.init() or set 
 			global environmental variable RESOURCES before calling."))
 	}
 
-	if (is.null(data_dir)) {
+	if (is.null(dataDir)) {
 		# Assume that a null data directory means to use the codeDir variable.
 		# This was previously accomplished with project.init2, but that is
 		# not actually necessary with this update.
-		data_dir = codeDir
+		dataDir = codeDir
 
 	}
 
-	PROJECT.DIR = MakePath(codeDir, envVar = "CODE", whenNull = getwd)
-	PROCESSED.PROJECT = MakePath(dataDir, 
-		envVar = "PROCESSED", whenNull = function() { PROJECT.DIR })
+	if (!is.null(subDir)){
+		project.init::setOutputSubdir(subDir)
+	}
+
+	PROJECT.DIR = makePath(codeDir, envVar="CODE", whenNull=getwd)
+	PROCESSED.PROJECT = makePath(dataDir, 
+		envVar="PROCESSED", whenNull=function() { PROJECT.DIR })
 
 	# Finalize the options.
-	options(PROJECT.DIR = PROJECT.DIR)
-	options(PROCESSED.PROJECT = PROCESSED.PROJECT)
+	options(PROJECT.DIR=PROJECT.DIR)
+	options(PROCESSED.PROJECT=PROCESSED.PROJECT)
 	setwd(getOption("PROJECT.DIR"))
 	message("PROJECT.DIR: ", getOption("PROJECT.DIR"))
 	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"))
 
-	initDirs()
-	initOptions()
-	initUtilities()
+	.initDirs()
+	.initOptions()
+	.initUtilities()
 
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
@@ -77,7 +81,7 @@ project.init2 = projectInit
 
 #' Make a secret alias function so I don't have to type so much
 #' @export
-go = project.init
+go = projectInit
 
 #' Helper alias to re-run init script, using your current dir settings.
 #' @export
@@ -86,7 +90,8 @@ projectRefresh = function() {
 		stop("No loaded project.")
 	}
 	project.init(codeDir=getOption("PROJECT.DIR"), 
-		dataDir=getOption("PROCESSED.PROJECT"), 
+		dataDir=getOption("PROCESSED.PROJECT"),
+		subDir=getOption("ROUT.SUBDIR"),
 		resources=Sys.getenv("RESOURCES"))
 }
 
@@ -126,4 +131,25 @@ refreshPackage = function(pkg, path=Sys.getenv("CODE"),
 	} )
 	install.packages(packageDir, repos=NULL)
 	library(pkg, character.only=TRUE)
+}
+
+
+#' Show project environment variables
+#'
+#' Displays the environment variables that are set and used by this package.
+#'@export
+penv = function() {
+	# env variables
+	envVars = c("RAWDATA", "PROCESSED", "RESOURCES", "WEB", "CODE")
+	envVarsValues = sapply(envVars, Sys.getenv)
+	
+	nShareOptionsList = c("PROJECT.DIR", "PROJECT.INIT", 
+		"PROCESSED.PROJECT",
+		"RESOURCES.RCACHE",
+		"RCACHE.DIR",
+		"RBUILD.DIR",
+		"ROUT.DIR",
+		"RGENOMEUTILS")
+	value = sapply(nShareOptionsList, getOption)
+	rbind(cbind(envVarsValues), cbind(value))
 }

@@ -38,8 +38,8 @@ makeAbsPath = function(perhapsRelative, parent) {
 #' Determine whether a path is absolute.
 #'
 #' @param target The path to check for seeming absolute-ness.
-#' @param env_var Name of the environment variable with parent folder candidate.
-#' @param when_null Strategy for deriving target if its argument is null.
+#' @param envVar Name of the environment variable with parent folder candidate.
+#' @param whenNull Strategy for deriving target if its argument is null.
 #' @return \code{target} if it's already absolute, result of \code{when_null()} 
 #'   if \code{target} is null, or joined version of parent candidate stored in 
 #'   \code{env_var} and (relative) \code{target}.
@@ -52,7 +52,7 @@ makePath = function(target, envVar, whenNull) {
         warning ("Using alternative for null target: ", fullpath);
     } else {
         parent = Sys.getenv(envVar)
-        if (identical("", parent)) { stop(Hint(envVar)) }
+        if (identical("", parent)) { stop(.hint(envVar)) }
 
         if (isAbsolute(target)) {
             fullpath = target
