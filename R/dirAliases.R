@@ -7,10 +7,15 @@
 #' but put the results somewhere else (such as a shared results space).
 #' @export
 dirOut = function(...) {
+	outdir = getOption("ROUT.DIR")
+	if (is.null(outdir)) {
+		warning("Null output dir 'ROUT.DIR';", 
+			"consider invoking 'projectInit' to establish that and other options.")
+	}
 	if (is.null(getOption("ROUT.SUBDIR"))) {
-		return(file.path(getOption("ROUT.DIR"), ...))
+		return(file.path(outdir, ...))
 	} else {
-		return(file.path(getOption("ROUT.DIR"), getOption("ROUT.SUBDIR"), ...))
+		return(file.path(outdir, getOption("ROUT.SUBDIR"), ...))
 	}
 }
 
