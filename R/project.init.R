@@ -103,59 +103,6 @@ rp = function() {
 }
 
 
-#' This is Nathan's custom utility loading function.
-#' It goes with my R utility package, and is used to load up utilities from
-#' that package. It was originally in funcCommon.R, but I moved it here
-#' because that's actually a utility, which uses this function to load it,
-#' so it's more natural if this loading function is here.
-#'
-#' It will search first any passed dir, then the working dir, and finally
-#' the global RGENOMEUTILS for the script to load.
-#'
-#'
-#' @param utility The name of the R script in the util directory to load.
-#' @param utilityDir Directory to search (custom)
-#' @export
-utility = function(utilities, utilityDir="") {
-	# Build a list of ordered directories to search for the utility.
-	utilityDirs = c(utilityDir, getOption("PROJECT.DIR"), paste0(getOption("RGENOMEUTILS"), "R/"));
-	for (u in utilities) {
-		foundUtility = FALSE;
-		# Look for a directory with the utilities, and load it in priority order.
-		for (d in utilityDirs) {
-			if ( substr(d,nchar(d), nchar(d)) != "/") {
-				d = paste(d, "/"); 
-			}
-			utilitySource = paste0(d, u);
-			if (file.exists(utilitySource)) { foundUtility=TRUE; break; }
-		}
-		if (!foundUtility) {
-			message("No utility found in dirs:", paste(utilityDirs, collapse=";"));
-			return(NULL);
-		}
-		message("Loading utility: ", utilitySource);
-		source(utilitySource);
-		options(LOADED.UTILITIES=unique(append(getOption("LOADED.UTILITIES"), u))) #keep this in options for renewProject();
-	}
-}
-
-
-loadAllUtilities = function(utilityDir=getOption("RGENOMEUTILS")) {
-	utilities = list.files(utilityDir, pattern=".R$")
-	utility(utilities, utilityDir);
-}
-
-
-#just a quick helper function to run a grep on the shared utility directory to locate a function if you don't know where the utility is.
-#should also test getOption("WORKING.DIR") ??
-findUtility = function(string) {
-	cmd = paste0('grep ', string, ' ', getOption("RGENOMEUTILS"), "R/*.R")
-	message(cmd);
-	res = system(cmd, intern=TRUE);
-	res;
-}
-
-
 #######################################################################
 # Populate default local directories
 #######################################################################
