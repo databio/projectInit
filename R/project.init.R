@@ -182,6 +182,7 @@ nenv = function() {
 
 
 init.dirs = function() {
+
 	
 	# Set defaults:
 	SetOption("ROUT.DIR", paste0(getOption("PROCESSED.PROJECT"), "analysis/"))
@@ -199,6 +200,7 @@ init.dirs = function() {
 
 
 # Load basic options (non-project-specific).
+
 init.options = function() {
 	# It drives me nuts when strings get processed as factors.
 	options(stringsAsFactors=FALSE);			# treat strings as strings

@@ -45,6 +45,7 @@ load.config = function(project=NULL, sp = NULL, filename=NULL, usesPathsSection 
 		message("Available subprojects: ", paste0(names(cfg$subprojects), collapse=","))
 	}
 
+
 	# Ensure that metadata (paths) are absolute and return the config.
 	cfg$metadata = MakeMetadataSectionAbsolute(cfg,
 		usesPathsSection = usesPathsSection, parent = dirname(cfgFile))
