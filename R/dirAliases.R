@@ -15,7 +15,7 @@ dirOut = function(...) {
 	if (is.null(getOption("ROUT.SUBDIR"))) {
 		return(dirWrapOpt("ROUT.DIR", ...))
 	} else {
-		return(dirWrapOpt("ROUT.DIR", sub="ROUT.SUBDIR", ...))
+		return(dirWrapOpt("ROUT.DIR", sub=getOption("ROUT.SUBDIR"), ...))
 	}
 }
 
