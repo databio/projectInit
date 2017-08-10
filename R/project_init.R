@@ -20,6 +20,16 @@ project.init = function(code_dir = NULL,
 			global environmental variable RESOURCES before calling.")
 	}
 
+
+
+	if (is.null(data_dir)) {
+		# Assume that a null data directory means to use the code_dir variable.
+		# This was previously accomplished with project.init2, but that is
+		# not actually necessary with this update.
+		data_dir = code_dir
+
+	}
+
 	PROJECT.DIR = MakePath(code_dir, envVar = "CODE", whenNull = getwd)
 	PROCESSED.PROJECT = MakePath(data_dir, 
 		envVar = "PROCESSED", whenNull = function() { PROJECT.DIR })
@@ -40,7 +50,7 @@ project.init = function(code_dir = NULL,
 	init_script_path = file.path(getOption("PROJECT.DIR"), "src", "00-init.R")
 	project.scripts = c(init_script_path, 
 		file.path(getOption("PROJECT.DIR"), "projectInit.R"))
-	initialized = FALSE;
+	initialized = FALSE
 	for (project.script in project.scripts) {
 		if (file_test("-f", project.script)) {
 			message(sprintf("Initializing: '%s'...", project.script))
@@ -74,27 +84,6 @@ project.refresh = function() {
 project.init2 = function(code_dir) {
 	project.init(code_dir = code_dir, data_dir = code_dir, 
 		RESOURCES = Sys.getenv("RESOURCES"))
-}
-
-
-# If you make changes to a utility script and want to reload it, this will reset
-# all the utilities, and reset you to the CWD.
-
-renewProject = function() {
-	clearLoadFunctions("PROJECT.VARS")
-	clearLoadFunctions("SHARE.VARS")
-	loadedUtilities = unique(getOption("LOADED.UTILITIES"))
-	options(LOADED.UTILITIES=NULL)
-	saveWorkingDir = getwd();
-	tryCatch( { 
-		source(getOption("PROJECT.INIT")) 
-		}, error = function (e) { 
-			message("Sourcing project.init failed:", e) 
-		} )
-	utToLoad = setdiff(loadedUtilities, unique(getOption("LOADED.UTILITIES")))
-	lapply(utToLoad, utility)  # reload previously loaded utilities
-	setwd(saveWorkingDir)
-	message(saveWorkingDir)
 }
 
 
