@@ -1,10 +1,3 @@
-library("pryr")
-library("utils")
-
-kOldPipelinesSection = "pipelines_dir"
-kRelativeSections = c("output_dir", kOldPipelinesSection, 
-	"pipeline_interfaces", "results_subdir", "submission_subdir")
-
 #' Loads a yaml config file
 #' @param project A project (use default config file names for this project)
 #' @param sp Subproject to activate
