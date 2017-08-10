@@ -4,7 +4,8 @@
 \alias{load.config}
 \title{Loads a yaml config file}
 \usage{
-load.config(project = NULL, sp = NULL, filename = NULL)
+load.config(project = NULL, sp = NULL, filename = NULL,
+  usesPathsSection = FALSE)
 }
 \arguments{
 \item{project}{A project (use default config file names for this project)}
@@ -16,4 +17,3 @@ load.config(project = NULL, sp = NULL, filename = NULL)
 \description{
 Loads a yaml config file
 }
-

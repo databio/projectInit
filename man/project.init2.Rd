@@ -5,10 +5,9 @@
 \title{Helper alias for the common case where the data and code dirs share
 a name.}
 \usage{
-project.init2(codeDir)
+project.init2(code_dir)
 }
 \description{
 Helper alias for the common case where the data and code dirs share
 a name.
 }
-

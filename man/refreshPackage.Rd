@@ -6,7 +6,7 @@
 Useful if I'm debugging packages and want to try the new version.
 Expects it to be in the ~/rpack/ package folder. by default}
 \usage{
-refreshPackage(pkg, path = Sys.getenv("CODEBASE"), compileAttributes = TRUE,
+refreshPackage(pkg, path = Sys.getenv("CODE"), compileAttributes = TRUE,
   roxygenize = TRUE)
 }
 \arguments{
@@ -21,4 +21,3 @@ Detach a custom packages, re-document, re-install, and re-load.
 Useful if I'm debugging packages and want to try the new version.
 Expects it to be in the ~/rpack/ package folder. by default
 }
-
