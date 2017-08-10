@@ -6,13 +6,13 @@
 #' @return Flag indicating whether the \code{path} appears to be absolute.
 #' @family path operations
 #' @export
-IsAbsolute = function(path) {
+isAbsolute = function(path) {
   firstChar = substr(path, 1, 1)
   return(identical("/", firstChar) | identical("~", firstChar))
 }
 
 
-MakeAbsPath = function(perhapsRelative, parent) {
+makeAbsPath = function(perhapsRelative, parent) {
     # Create an absolute path from a primary target and a parent candidate.
     #
     # Args:
@@ -21,12 +21,12 @@ MakeAbsPath = function(perhapsRelative, parent) {
     #
     # Returns:
     #   Target itself if already absolute, else target nested within parent.
-    if (IsAbsolute(perhapsRelative)) {
+    if (isAbsolute(perhapsRelative)) {
         abspath = perhapsRelative
     } else {
         abspath = file.path(parent, perhapsRelative)
     }
-    if (!IsAbsolute(abspath)) {
+    if (!isAbsolute(abspath)) {
         errmsg = sprintf("Relative path '%s' and parent '%s' failed to create
             absolute path: '%s'", perhapsRelative, parent, abspath)
         stop(errmsg)
@@ -45,7 +45,7 @@ MakeAbsPath = function(perhapsRelative, parent) {
 #'   \code{env_var} and (relative) \code{target}.
 #' @family path operations
 #' @export
-MakePath = function(target, envVar, whenNull) {
+makePath = function(target, envVar, whenNull) {
   
     if (is.null(target)) {
         fullpath = whenNull()
@@ -54,7 +54,7 @@ MakePath = function(target, envVar, whenNull) {
         parent = Sys.getenv(envVar)
         if (identical("", parent)) { stop(Hint(envVar)) }
 
-        if (IsAbsolute(target)) {
+        if (isAbsolute(target)) {
             fullpath = target
         } else {
             fullpath = file.path(parent, target)
@@ -62,7 +62,7 @@ MakePath = function(target, envVar, whenNull) {
 
     }
 
-    if (!IsAbsolute(fullpath)) {
+    if (!isAbsolute(fullpath)) {
         stop(sprintf("Could not make absolute path from primary
                 target %s and parent candidate %s (from %s)",
                 target, parent, envVar))

@@ -6,7 +6,7 @@
 #' This allows you to keep a working directory that's relative to your code,
 #' but put the results somewhere else (which is shared space).
 #' @export
-dirout = function(...) {
+dirOut = function(...) {
 	file.path(getOption("ROUT.DIR"), ...)
 }
 
@@ -27,7 +27,7 @@ setOutputSubdir = function(...) {
 
 #' as dirout() but uses a subdir set by setOutputSubdir().
 #' @export
-diroutsub = function(...) {
+dirOutSub = function(...) {
 	subdir = file.path(getOption("ROUT.DIR"), getOption("ROUT.SUBDIR"))
 	message("Subdir: ", subdir)
 	file.path(subdir, ...)
@@ -45,14 +45,14 @@ createRootSubdir = function(...) {
 #' Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirdata = function(...) {
+dirData = function(...) {
 	file.path(getOption("PROCESSED.PROJECT"), ...)
 }
 
 #' Raw Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirraw = function(...) {
+dirRaw = function(...) {
 	file.path(Sys.getenv("RAWDATA"), ...)
 }
 
@@ -60,14 +60,14 @@ dirraw = function(...) {
 #' Resource Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirres = function(...) {
+dirRes = function(...) {
 	file.path(Sys.getenv("RESOURCES"), ...)
 }
 
 #' Web Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirweb = function(...) {
+dirWeb = function(...) {
 	file.path(Sys.getenv("WEB"), ...)
 }
 

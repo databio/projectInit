@@ -3,8 +3,7 @@
 #' @param sp Subproject to activate
 #' @param file file path to config file, allows you to specify an exact file.
 #' @export
-load.config = function(project=NULL, sp = NULL, filename=NULL, usesPathsSection = FALSE) {
-
+loadConfig = function(project=NULL, sp = NULL, filename=NULL, usesPathsSectio =FALSE) {
 	# Derive project folder from environment variables and project name.
 	if (is.null(project)) { 
 		projectDir = options("PROJECT.DIR")
@@ -14,7 +13,7 @@ load.config = function(project=NULL, sp = NULL, filename=NULL, usesPathsSection 
 	}
 
 	# Load the project configuration file.
-	cfgFile = FindConfigFile(projectFolder = projectDir,
+	cfgFile = findConfigFile(projectFolder = projectDir,
 		nameConfigFile = filename, projectName = project)
 	if (!IsDefined(cfgFile)) {
 		message("No config file found.")
@@ -40,15 +39,21 @@ load.config = function(project=NULL, sp = NULL, filename=NULL, usesPathsSection 
 
 
 	# Ensure that metadata (paths) are absolute and return the config.
-	cfg$metadata = MakeMetadataSectionAbsolute(cfg,
+	cfg$metadata = makeMetadataSectionAbsolute(cfg,
 		usesPathsSection = usesPathsSection, parent = dirname(cfgFile))
 	return(cfg)
 }
 
 
+#' Alias for backwards compatibility
+#'
+#' @export
+load.config = loadConfig
+
+
 #' Mapper of organism name to genomic assembly name
 #'
-#' \code{AssemblyByOrganism} uses the data in a project config object to 
+#' \code{assemblyByOrganism} uses the data in a project config object to 
 #' map organism name to genomic assembly name, supporting both the direct 
 #' mapping within a \code{genome} section, or an encoding of this data in 
 #' an \code{implied_columns} section.
@@ -59,9 +64,8 @@ load.config = function(project=NULL, sp = NULL, filename=NULL, usesPathsSection 
 #'         each list element is the corresponding genomic assembly name.
 #' @seealso \url{http://looper.readthedocs.io/en/latest/implied-columns.html}
 #' @export
-AssemblyByOrganism = function(config) {
-	
-	# Basic case, in which the project config directly maps organism name 
+assemblyByOrganism = function(config) {
+		# Basic case, in which the project config directly maps organism name 
 	# to genomic assembly name
 	if (!is.null(config$genome)) { return(config$genome) }
 	
@@ -90,8 +94,7 @@ AssemblyByOrganism = function(config) {
 }
 
 
-ExpandPath = function(path) {
-
+expandPath = function(path) {
 	# Handle null/empty input.
 	if (!IsDefined(path)) { return(path) }
 
@@ -109,11 +112,12 @@ ExpandPath = function(path) {
 	return(fullPath)
 }
 
-FileExists = function(fpath) { file_test("-f", fpath) }
+
+fileExists = function(fpath) { file_test("-f", fpath) }
 
 
-FindConfigFile = function(
-	projectFolder, nameConfigFile = NULL, projectName = NULL) {
+findConfigFile = function(projectFolder, nameConfigFile = NULL, 
+							projectName = NULL) {
 
 	# First, form the relative filepaths to consider as config file candidates.
 	filenames = c("config.yaml", "project_config.yaml")    # Defaults
@@ -130,13 +134,13 @@ FindConfigFile = function(
 
 	# Within current project directory, find the first configuration
 	# file that exists from among a pool of config file names.
-	ensureAbsolute = pryr::partial(MakeAbsPath, parent = projectFolder)
-	cfgFile = FirstExtantFile(files = candidates, modify = ensureAbsolute)
+	ensureAbsolute = pryr::partial(makeAbsPath, parent = projectFolder)
+	cfgFile = firstExtantFile(files = candidates, modify = ensureAbsolute)
 	return(cfgFile)
 }
 
 
-FirstExtantFile = function(files, modify = identity) {
+firstExtantFile = function(files, modify = identity) {
 	# Find the first extant file from a sequence of candidates.
 	#
 	# Args:
@@ -150,18 +154,17 @@ FirstExtantFile = function(files, modify = identity) {
 	#   (Absolute) path to the first element that exists. NA if 
 	#   no element considered resolves to valid filesystem location.
 	modified = sapply(files, modify)
-	return(modified[which(sapply(modified, FileExists))[1]])
+	return(modified[which(sapply(modified, fileExists))[1]])
 }
 
 
-MakeMetadataSectionAbsolute = function(config, usesPathsSection, parent) {
-
+makeMetadataSectionAbsolute = function(config, usesPathsSection, parent) {
 	# Enable creation of absolute path using given parent folder path.
-	AbsViaParent = pryr::partial(MakeAbsPath, parent = parent)
+	absViaParent = pryr::partial(makeAbsPath, parent = parent)
 
 	# For earlier project config file layout, handling each metadata
 	# item in the same way, deriving absolute path from parent, was valid.
-	if (usesPathsSection) { return(lapply(config$metadata, AbsViaParent)) }
+	if (usesPathsSection) { return(lapply(config$metadata, absViaParent)) }
 
 	# With newer project config file layout,
 	# certain metadata members are handled differently.
@@ -177,15 +180,15 @@ MakeMetadataSectionAbsolute = function(config, usesPathsSection, parent) {
 					"Config contains old pipeline location specification section: '%s'", 
 					kOldPipelinesSection))
 			}
-			value = ExpandPath(value)
+			value = expandPath(value)
 			if (!IsAbsolute(value)) {
-				value = file.path(ExpandPath(config$metadata[["output_dir"]]), value)
+				value = file.path(expandPath(config$metadata[["output_dir"]]), value)
 			}
 		}
-		else { value = AbsViaParent(value) }    # No special handling
+		else { value = absViaParent(value) }    # No special handling
 
 		# Check for and warn about nonexistent path before setting value.
-		if (!(FileExists(value) | dir.exists(value))) {
+		if (!(fileExists(value) | dir.exists(value))) {
 			warning(sprintf("Value for '%s' doesn't exist: '%s'", metadataAttribute, value))
 		}
 		absoluteMetadata[[metadataAttribute]] = value

@@ -76,7 +76,7 @@ project.init2 = projectInit
 go = project.init
 
 #' Helper alias to re-run init script, using your current dir settings.
-project.refresh = function() { 
+projectRefresh = function() { 
 	project.init(codeDir = getOption("PROJECT.DIR"), 
 		dataDir = getOption("PROCESSED.PROJECT"), 
 		RESOURCES = Sys.getenv("RESOURCES"))
