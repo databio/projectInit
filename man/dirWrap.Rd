@@ -5,7 +5,7 @@
 \title{Generic function to prepend an environment variable directory
 to your relative filepath.}
 \usage{
-dirWrap(var, sub = NULL, ...)
+dirWrap(var, ..., sub = NULL)
 }
 \description{
 Generic function to prepend an environment variable directory
