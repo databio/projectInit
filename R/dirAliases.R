@@ -50,10 +50,11 @@ dirWeb = function(...) {
 #' Generic function to prepend an environment variable directory
 #' to your relative filepath.
 dirWrap = function(var, ..., sub=NULL) {
+	userPath = .sanitizeUserPath(...)
 	if (is.null(sub)) {
-		outputPath = file.path(Sys.getenv(var), paste0(...))
+		outputPath = file.path(Sys.getenv(var), userPath)
 	} else {
-		outputPath = file.path(Sys.getenv(var), sub, paste0(...))
+		outputPath = file.path(Sys.getenv(var), sub, userPath)
 	}
 	return(outputPath)
 }
@@ -61,14 +62,27 @@ dirWrap = function(var, ..., sub=NULL) {
 # TODO: Standardize to options or envvars?
 # Uses options instead of envs.
 dirWrapOpt = function(var, ..., sub=NULL) {
+	userPath = .sanitizeUserPath(...)
 	if (is.null(sub)) {
-		outputPath = file.path(getOption(var), paste0(...))
+		outputPath = file.path(getOption(var), userPath)
 	} else {
-		outputPath = file.path(getOption(var), sub, paste0(...))
+		outputPath = file.path(getOption(var), sub, userPath)
 	}
 	return(outputPath)
 }
 
+# paste0() if given no values returns character(0); this doesn't play
+# nicely with file.path, which returns bad value if any of the values are
+# bad, instead of ignoring them. This changes the default output to an 
+# empty string so it can be passed to file.path without problems.
+.sanitizeUserPath = function(...) {
+	userPath = paste0(...)
+	if (identical(userPath,character(0))) {
+		# for a blank function call; that's allowed, give parent dir.
+		userPath = ""
+	}
+	return(userPath)
+}
 
 
 

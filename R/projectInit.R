@@ -66,7 +66,7 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 			prj = pepr::Project(cfgFile)
 		}
 	}
-
+	eload(nlist(prj))
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
 	initScriptPath = file.path(getOption("PROJECT.DIR"), "src", "00-init.R")
