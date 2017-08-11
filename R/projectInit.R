@@ -43,6 +43,11 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 	# Finalize the options.
 	options(PROJECT.DIR=PROJECT.DIR)
 	options(PROCESSED.PROJECT=PROCESSED.PROJECT)
+
+	if (!file.exists(PROJECT.DIR)) {
+		stop("Directory does not exist or is not writable: ", PROJECT.DIR)
+	}
+
 	setwd(getOption("PROJECT.DIR"))
 	message("PROJECT.DIR: ", getOption("PROJECT.DIR"))
 	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"))
@@ -50,6 +55,17 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 	.initDirs()
 	.initOptions()
 	.initUtilities()
+
+
+	# Initialize config file if we can find one
+	prj = NULL  # default value in case config is not found
+	cfgFile = findConfigFile(PROJECT.DIR)
+	if (!is.null(cfgFile)){
+		message("Found config file: ", cfgFile)
+		if (requireNamespace("pepr")) {
+			prj = pepr::Project(cfgFile)
+		}
+	}
 
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
@@ -72,6 +88,7 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 		this project.")
 		.nicemsg(msg)
 	}
+	return(prj)
 }
 #' Alias for backward compatibility
 #' @export 
