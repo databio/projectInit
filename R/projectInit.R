@@ -51,6 +51,14 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 	.initOptions()
 	.initUtilities()
 
+
+	# Initialize config file if we can find one
+	cfgFile = findConfigFile(PROJECT.DIR)
+	message("Found config file: ", cfgFile)
+	if (requireNamespace("pepr")) {
+		prj = pepr::Project(cfgFile)
+	}
+
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
 	initScriptPath = file.path(getOption("PROJECT.DIR"), "src", "00-init.R")
@@ -72,6 +80,7 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 		this project.")
 		.nicemsg(msg)
 	}
+	return(prj)
 }
 #' Alias for backward compatibility
 #' @export 
