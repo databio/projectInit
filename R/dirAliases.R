@@ -26,6 +26,14 @@ dirData = function(...) {
 	dirWrapOpt("PROCESSED.PROJECT", ...)
 }
 
+
+dirProc = function(...) {
+	dirWrapOpt("PROCESSED.PROJECT", ...)
+}
+
+
+
+
 #' Raw Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
