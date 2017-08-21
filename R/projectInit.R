@@ -66,7 +66,13 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 			prj = pepr::Project(cfgFile)
 		}
 	}
-	eload(nlist(prj))
+	if (requireNamespace("RGenomeUtils")) {
+		message("Loading project variables into shared variables environment...")
+		RGenomeUtils::eload(nlist(prj))
+	} else {
+		message("No RGenomeUtils, skipping project variables' storage")
+	}
+	
 	
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
