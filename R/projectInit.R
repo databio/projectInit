@@ -75,7 +75,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	}
 	if (requireNamespace("RGenomeUtils")) {
 		message("Loading project variables into shared variables environment...")
-		RGenomeUtils::eload(nlist(prj))
+		RGenomeUtils::eload(RGenomeUtils::nlist(prj))
 	} else {
 		message("No RGenomeUtils, skipping project variables' storage")
 	}
