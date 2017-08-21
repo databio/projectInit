@@ -77,10 +77,11 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
 	projdir = getOption("PROJECT.DIR")
-	init_candidates = c("00-init.R", "projectInit.R")
+	init_candidates = sapply(
+		X = c("00-init.R", "projectInit.R"), 
+		FUN = function(s) { file.path(projdir, s) })
 	initialized = FALSE
-	for (script_name in init_candidates) {
-		projectScript = file.path(projdir, script_name)
+	for (projectScript in init_candidates) {
 		if (file_test("-f", projectScript)) {
 			message(sprintf("Initializing: '%s'...", projectScript))
 			source(projectScript)
@@ -90,9 +91,8 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 		}
 	}
 	if (!initialized) {
-		msg = paste0("Found no project init script. If you place a file in ",
-		initScriptPath, ", it will be loaded automatically when you initialize
-		this project.")
+		msg = sprintf(
+			"No project init script. If you write '%s', it's loaded automatically by projectInit.", init_candidates[1])
 		.nicemsg(msg)
 	}
 	
