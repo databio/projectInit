@@ -67,13 +67,14 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 		}
 	}
 	eload(nlist(prj))
+	
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
-	initScriptPath = file.path(getOption("PROJECT.DIR"), "src", "00-init.R")
-	projectScripts = c(initScriptPath, 
-		file.path(getOption("PROJECT.DIR"), "projectInit.R"))
+	projdir = getOption("PROJECT.DIR")
+	init_candidates = c("00-init.R", "projectInit.R")
 	initialized = FALSE
-	for (projectScript in projectScripts) {
+	for (script_name in init_candidates) {
+		projectScript = file.path(projdir, script_name)
 		if (file_test("-f", projectScript)) {
 			message(sprintf("Initializing: '%s'...", projectScript))
 			source(projectScript)
@@ -88,8 +89,10 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 		this project.")
 		.nicemsg(msg)
 	}
+	
 	return(prj)
 }
+
 #' Alias for backward compatibility
 #' @export 
 project.init = projectInit
