@@ -8,15 +8,22 @@
 NULL
 
 
-#' Initialize workspace for a given project
+#' Project workspace initializer
 #'
-#' This function will source the 00-init.R script for the project.
-#' You pass a complete folder or a relative path.
+#' \code{projectInit} sources the \code{00-init.R} or \code{projectInit.R} 
+#' script for the project. You pass a complete folder or a relative path.
 #'
-#' @param codeDir	
+#' @param codeRoot Path to the folder representing a code repository root.
+#' @param dataDir Path to folder containing project data.
+#' @param outputSubdir Location for project-specific output, resolved by 
+#'                     \code{dirOut} and stored as option \code{ROUT.SUBDIR}.
+#' @param resources Location of general-purpose resources; default is to use 
+#'                  system environment variable \code{RESOURCES}.
+#' @param scriptSubdir Name for the folder within \code{codeRoot} that 
+#'                     stores the scripts for this project.
 #' @export
-projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
-						resources=Sys.getenv("RESOURCES")) {
+projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
+						resources=Sys.getenv("RESOURCES"), scriptSubdir = "src") {
 
 	if (identical("", resources) | is.null(resources)) {
 		stop(strwrap("Supply RESOURCES argument to project.init() or set 
@@ -24,19 +31,19 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 	}
 
 	if (is.null(dataDir)) {
-		# Assume that a null data directory means to use the codeDir variable.
+		# Assume that a null data directory means to use the codeRoot variable.
 		# This was previously accomplished with project.init2, but that is
 		# not actually necessary with this update.
-		dataDir = codeDir
+		dataDir = codeRoot
 
 	}
 
-	if (!is.null(subDir)){
-		.nicemsg("Found subdir: ", subDir)
-		project.init::setOutputSubdir(subDir)
+	if (!is.null(outputSubdir)){
+		.nicemsg("Found subdir: ", outputSubdir)
+		project.init::setOutputSubdir(outputSubdir)
 	}
 
-	PROJECT.DIR = .selectPath(codeDir, parent=.niceGetEnv("CODE"), default=getwd())
+	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"), default=getwd())
 	PROCESSED.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
 		default=PROJECT.DIR)
 
@@ -76,10 +83,10 @@ projectInit = function(codeDir=NULL, dataDir=NULL, subDir=NULL,
 	
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
-	projdir = getOption("PROJECT.DIR")
+	scripts_folder = file.path(getOption("PROJECT.DIR"), scriptSubdir)
 	init_candidates = sapply(
 		X = c("00-init.R", "projectInit.R"), 
-		FUN = function(s) { file.path(projdir, s) })
+		FUN = function(s) { file.path(scripts_folder, s) })
 	initialized = FALSE
 	for (projectScript in init_candidates) {
 		if (file_test("-f", projectScript)) {
@@ -117,9 +124,9 @@ projectRefresh = function() {
 	if (is.null(getOption("PROJECT.DIR"))) {
 		stop("No loaded project.")
 	}
-	project.init(codeDir=getOption("PROJECT.DIR"), 
+	project.init(codeRoot=getOption("PROJECT.DIR"), 
 		dataDir=getOption("PROCESSED.PROJECT"),
-		subDir=getOption("ROUT.SUBDIR"),
+		outputSubdir=getOption("ROUT.SUBDIR"),
 		resources=Sys.getenv("RESOURCES"))
 }
 
