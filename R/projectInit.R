@@ -83,10 +83,14 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
-	scripts_folder = file.path(getOption("PROJECT.DIR"), scriptSubdir)
+	original_init_name = "projectInit.R"
+	projdir = getOption("PROJECT.DIR")
+	scripts_folder = file.path(projdir, scriptSubdir)
 	init_candidates = sapply(
-		X = c("00-init.R", "projectInit.R"), 
+		X = c("00-init.R", original_init_name), 
 		FUN = function(s) { file.path(scripts_folder, s) })
+	init_candidates = append(init_candidates, 
+		file.path(projdir, original_init_name))
 	initialized = FALSE
 	for (projectScript in init_candidates) {
 		if (file_test("-f", projectScript)) {
