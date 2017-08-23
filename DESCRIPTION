@@ -1,18 +1,23 @@
 Package: project.init
 Type: Package
-Title: Makes it easy to create R environments for different projects
-Version: 0.0.1
+Title: Initialize Standardized R Workspaces for Individual Projects
+Version: 0.2.0
 Date: 2015-05-18
-Author: Nathan Sheffield
-Maintainer: Nathan Sheffield <yourfault@somewhere.net>
-Description: Just my personal package providing a few initialization functions
-    that I use to create project-specific r environments.
+Authors@R: c(person("Nathan", "Sheffield", email = "nathan@code.databio.org",
+    role = c("aut", "cre")))
+Maintainer: Nathan Sheffield <nathan@code.databio.org>
+Description: Makes it easy to initialize a customized workspace, relying on
+	shell environment variables to point easy function aliases so you can control
+	project-specific results directories, data inputs, shared temporary files, and
+	other resources
 Imports:
-    data.table,
-    extrafont,
-    ggplot2,
     pryr,
-    simpleCache,
     yaml
-License: What license is it under?
+Suggests:
+	knitr
+Enhances:
+	Rcpp,
+	roxygen2
+VignetteBuilder: knitr
+License: GPL-3
 RoxygenNote: 6.0.1
