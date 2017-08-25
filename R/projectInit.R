@@ -61,8 +61,6 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 
 	.initDirs()
 	.initOptions()
-	.initUtilities()
-
 
 	# Initialize config file if we can find one
 	prj = NULL  # default value in case config is not found
@@ -73,14 +71,14 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 			prj = pepr::Project(cfgFile)
 		}
 	}
+
 	if (requireNamespace("RGenomeUtils")) {
 		message("Loading project variables into shared variables environment...")
 		RGenomeUtils::eload(RGenomeUtils::nlist(prj))
 	} else {
 		message("No RGenomeUtils, skipping project variables' storage")
 	}
-	
-	
+		
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
 	original_init_name = "projectInit.R"

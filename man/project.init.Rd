@@ -7,8 +7,8 @@
 \alias{project.init}
 \title{Package docs}
 \usage{
-project.init(codeDir = NULL, dataDir = NULL, subDir = NULL,
-  resources = Sys.getenv("RESOURCES"))
+project.init(codeRoot = NULL, dataDir = NULL, outputSubdir = NULL,
+  resources = Sys.getenv("RESOURCES"), scriptSubdir = "src")
 }
 \description{
 Package docs

@@ -122,15 +122,6 @@
 	options(scipen=15)                 # turn off scientific notation
 }
 
-.initUtilities = function() {
-	if (! is.null(getOption("RGENOMEUTILS")) ) {
-		devtools::load_all(getOption("RGENOMEUTILS"))
-	} else {
-		message("You can connect the RGenomeUtils if you set an option named 
-			RGENOMEUTILS pointing to the RGenomeUtils repo; I usually set this in my .Rprofile")
-	} 
-}
-
 
 .nicetxt = function(...) {
 	paste(strwrap(paste(..., collapse=" ")), collapse="\n")
