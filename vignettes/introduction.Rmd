@@ -63,7 +63,7 @@ dirOut()
 
 You can use this convenient function for all your plots. Instead of passing your filename directly to the `pdf()` function, run it through `dirOut()` to automatically save it in the project-specific output directory like this:
 
-```{r}
+```{r, eval=FALSE}
 pdf(dirOut("filename.pdf"))
 plot(1)
 dev.off()
@@ -110,6 +110,6 @@ Furthermore, it sets a global cache directory (by default at `${RESOURCES}/cache
 
 Let's clean up that temporary file we created earlier:
 
-```{r}
+```{r, eval=FALSE}
 unlink(dirOut("filename.pdf"))
 ```

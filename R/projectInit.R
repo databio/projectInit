@@ -53,10 +53,11 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	options(PROCESSED.PROJECT=PROCESSED.PROJECT)
 
 	if (!file.exists(PROJECT.DIR)) {
-		stop("Directory does not exist or is not writable: ", PROJECT.DIR)
+		warning("Directory does not exist or is not writable: ", PROJECT.DIR)
+	} else {
+		setwd(getOption("PROJECT.DIR"))
 	}
 
-	setwd(getOption("PROJECT.DIR"))
 	message("PROJECT.DIR: ", getOption("PROJECT.DIR"))
 	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"))
 
@@ -66,14 +67,14 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	# Initialize config file if we can find one
 	prj = NULL  # default value in case config is not found
 	cfgFile = findConfigFile(PROJECT.DIR)
-	if (!is.null(cfgFile)){
+	if (!is.null(cfgFile) & !is.na(cfgFile)){
 		message("Found config file: ", cfgFile)
 		if (requireNamespace("pepr")) {
 			prj = pepr::Project(cfgFile)
 		}
 	}
 
-	if (requireNamespace("RGenomeUtils")) {
+	if (requireNamespace("RGenomeUtils") & !is.null(prj) ) {
 		message("Loading project variables into shared variables environment...")
 		RGenomeUtils::eload(RGenomeUtils::nlist(prj))
 	} else {
