@@ -1,10 +1,10 @@
 #' Package docs
 #' @docType package
-#' @name project.init
+#' @name projectInit
 #' @author Nathan Sheffield
 #' @import devtools
 #'
-#' @references \url{http://github.com/databio/project.init}
+#' @references \url{http://github.com/databio/projectInit}
 NULL
 
 
@@ -23,10 +23,10 @@ NULL
 #'                     stores the scripts for this project.
 #' @export
 projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
-						resources=Sys.getenv("RESOURCES"), scriptSubdir = "src") {
+						resources=Sys.getenv("RESOURCES"), scriptSubdir="src") {
 
 	if (identical("", resources) | is.null(resources)) {
-		stop(strwrap("Supply RESOURCES argument to project.init() or set 
+		stop(strwrap("Supply RESOURCES argument to projectInit() or set 
 			global environmental variable RESOURCES before calling."))
 	}
 
@@ -39,11 +39,12 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	}
 
 	if (!is.null(outputSubdir)){
-		.nicemsg("Found subdir: ", outputSubdir)
-		project.init::setOutputSubdir(outputSubdir)
+		.tidymsg("Found subdir: ", outputSubdir)
+		projectInit::setOutputSubdir(outputSubdir)
 	}
 
-	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"), default=getwd())
+	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"),
+								default=getwd())
 	PROCESSED.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
 		default=PROJECT.DIR)
 
@@ -52,59 +53,58 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	options(PROCESSED.PROJECT=PROCESSED.PROJECT)
 
 	if (!file.exists(PROJECT.DIR)) {
-		stop("Directory does not exist or is not writable: ", PROJECT.DIR)
+		warning("Directory does not exist or is not writable: ", PROJECT.DIR)
+	} else {
+		setwd(getOption("PROJECT.DIR"))
 	}
 
-	setwd(getOption("PROJECT.DIR"))
 	message("PROJECT.DIR: ", getOption("PROJECT.DIR"))
 	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"))
 
 	.initDirs()
 	.initOptions()
-	.initUtilities()
-
 
 	# Initialize config file if we can find one
 	prj = NULL  # default value in case config is not found
 	cfgFile = findConfigFile(PROJECT.DIR)
-	if (!is.null(cfgFile)){
+	if (!is.null(cfgFile) & !is.na(cfgFile)){
 		message("Found config file: ", cfgFile)
 		if (requireNamespace("pepr")) {
 			prj = pepr::Project(cfgFile)
 		}
 	}
-	if (requireNamespace("RGenomeUtils")) {
+
+	if (requireNamespace("RGenomeUtils") & !is.null(prj) ) {
 		message("Loading project variables into shared variables environment...")
 		RGenomeUtils::eload(RGenomeUtils::nlist(prj))
 	} else {
 		message("No RGenomeUtils, skipping project variables' storage")
 	}
-	
-	
+		
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
-	original_init_name = "projectInit.R"
+	originalInitName = "projectInit.R"
 	projdir = getOption("PROJECT.DIR")
-	scripts_folder = file.path(projdir, scriptSubdir)
-	init_candidates = sapply(
-		X = c("00-init.R", original_init_name), 
-		FUN = function(s) { file.path(scripts_folder, s) })
-	init_candidates = append(init_candidates, 
-		file.path(projdir, original_init_name))
+	scriptsFolder = file.path(projdir, scriptSubdir)
+	initCandidates = sapply(
+		X = c("00-init.R", originalInitName), 
+		FUN = function(s) { file.path(scriptsFolder, s) })
+	initCandidates = append(initCandidates, 
+		file.path(projdir, originalInitName))
 	initialized = FALSE
-	for (projectScript in init_candidates) {
+	for (projectScript in initCandidates) {
 		if (file_test("-f", projectScript)) {
 			message(sprintf("Initializing: '%s'...", projectScript))
 			source(projectScript)
-			options(PROJECT.INIT = projectScript)
+			options(PROJECT.INIT=projectScript)
 			initialized = TRUE
 			break
 		}
 	}
 	if (!initialized) {
-		msg = sprintf(
-			"No project init script. If you write '%s', it's loaded automatically by projectInit.", init_candidates[1])
-		.nicemsg(msg)
+		msg = sprintf(.tidytxt("No project init script. If you write '%s', 
+			it's loaded automatically by projectInit."), initCandidates[1])
+		.tidymsg(msg)
 	}
 	
 	return(prj)
@@ -128,7 +128,7 @@ projectRefresh = function() {
 	if (is.null(getOption("PROJECT.DIR"))) {
 		stop("No loaded project.")
 	}
-	project.init(codeRoot=getOption("PROJECT.DIR"), 
+	projectInit(codeRoot=getOption("PROJECT.DIR"), 
 		dataDir=getOption("PROCESSED.PROJECT"),
 		outputSubdir=getOption("ROUT.SUBDIR"),
 		resources=Sys.getenv("RESOURCES"))
@@ -144,8 +144,10 @@ rp = projectRefresh
 #' Useful if I'm debugging packages and want to try the new version.
 #' Expects it to be in the ${CODE} folder by default
 #' @param pkg Package name
-#' @param roxygenize	Should I roxygen2::roxygenize it to refresh documentation before installing?
-#' @param compileAttributes	Should I Rcpp:compileAttributes to refresh Rcpp code before installing?
+#' @param roxygenize   Should I roxygen2::roxygenize it to refresh documentation
+#'     before installing?
+#' @param compileAttributes    Should I Rcpp:compileAttributes to refresh Rcpp
+#'     code before installing?
 #' @export
 refreshPackage = function(pkg, path=Sys.getenv("CODE"),
 						compileAttributes=TRUE, roxygenize=TRUE) {
