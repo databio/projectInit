@@ -43,7 +43,8 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 		projectInit::setOutputSubdir(outputSubdir)
 	}
 
-	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"), default=getwd())
+	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"),
+								default=getwd())
 	PROCESSED.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
 		default=PROJECT.DIR)
 
@@ -100,8 +101,8 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 		}
 	}
 	if (!initialized) {
-		msg = sprintf(
-			"No project init script. If you write '%s', it's loaded automatically by projectInit.", initCandidates[1])
+		msg = sprintf(.tidytxt("No project init script. If you write '%s', 
+			it's loaded automatically by projectInit."), initCandidates[1])
 		.tidymsg(msg)
 	}
 	
@@ -142,8 +143,10 @@ rp = projectRefresh
 #' Useful if I'm debugging packages and want to try the new version.
 #' Expects it to be in the ${CODE} folder by default
 #' @param pkg Package name
-#' @param roxygenize	Should I roxygen2::roxygenize it to refresh documentation before installing?
-#' @param compileAttributes	Should I Rcpp:compileAttributes to refresh Rcpp code before installing?
+#' @param roxygenize   Should I roxygen2::roxygenize it to refresh documentation
+#'     before installing?
+#' @param compileAttributes    Should I Rcpp:compileAttributes to refresh Rcpp
+#'     code before installing?
 #' @export
 refreshPackage = function(pkg, path=Sys.getenv("CODE"),
 						compileAttributes=TRUE, roxygenize=TRUE) {
