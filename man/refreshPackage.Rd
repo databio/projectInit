@@ -13,9 +13,11 @@ refreshPackage(pkg, path = Sys.getenv("CODE"), compileAttributes = TRUE,
 \arguments{
 \item{pkg}{Package name}
 
-\item{compileAttributes}{Should I Rcpp:compileAttributes to refresh Rcpp code before installing?}
+\item{compileAttributes}{Should I Rcpp:compileAttributes to refresh Rcpp
+code before installing?}
 
-\item{roxygenize}{Should I roxygen2::roxygenize it to refresh documentation before installing?}
+\item{roxygenize}{Should I roxygen2::roxygenize it to refresh documentation
+before installing?}
 }
 \description{
 Package handling function
