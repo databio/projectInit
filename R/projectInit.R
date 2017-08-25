@@ -1,6 +1,6 @@
 #' Package docs
 #' @docType package
-#' @name project.init
+#' @name projectInit
 #' @author Nathan Sheffield
 #' @import devtools
 #'
@@ -26,7 +26,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 						resources=Sys.getenv("RESOURCES"), scriptSubdir="src") {
 
 	if (identical("", resources) | is.null(resources)) {
-		stop(strwrap("Supply RESOURCES argument to project.init() or set 
+		stop(strwrap("Supply RESOURCES argument to projectInit() or set 
 			global environmental variable RESOURCES before calling."))
 	}
 
@@ -40,7 +40,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 
 	if (!is.null(outputSubdir)){
 		.tidymsg("Found subdir: ", outputSubdir)
-		project.init::setOutputSubdir(outputSubdir)
+		projectInit::setOutputSubdir(outputSubdir)
 	}
 
 	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"), default=getwd())
@@ -126,7 +126,7 @@ projectRefresh = function() {
 	if (is.null(getOption("PROJECT.DIR"))) {
 		stop("No loaded project.")
 	}
-	project.init(codeRoot=getOption("PROJECT.DIR"), 
+	projectInit(codeRoot=getOption("PROJECT.DIR"), 
 		dataDir=getOption("PROCESSED.PROJECT"),
 		outputSubdir=getOption("ROUT.SUBDIR"),
 		resources=Sys.getenv("RESOURCES"))
