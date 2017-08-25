@@ -81,16 +81,16 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 		
 	# Finalize the initialization by sourcing the project-specific
 	# initialization script
-	original_init_name = "projectInit.R"
+	originalInitName = "projectInit.R"
 	projdir = getOption("PROJECT.DIR")
-	scripts_folder = file.path(projdir, scriptSubdir)
-	init_candidates = sapply(
-		X = c("00-init.R", original_init_name), 
-		FUN = function(s) { file.path(scripts_folder, s) })
-	init_candidates = append(init_candidates, 
-		file.path(projdir, original_init_name))
+	scriptsFolder = file.path(projdir, scriptSubdir)
+	initCandidates = sapply(
+		X = c("00-init.R", originalInitName), 
+		FUN = function(s) { file.path(scriptsFolder, s) })
+	initCandidates = append(initCandidates, 
+		file.path(projdir, originalInitName))
 	initialized = FALSE
-	for (projectScript in init_candidates) {
+	for (projectScript in initCandidates) {
 		if (file_test("-f", projectScript)) {
 			message(sprintf("Initializing: '%s'...", projectScript))
 			source(projectScript)
@@ -101,7 +101,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	}
 	if (!initialized) {
 		msg = sprintf(
-			"No project init script. If you write '%s', it's loaded automatically by projectInit.", init_candidates[1])
+			"No project init script. If you write '%s', it's loaded automatically by projectInit.", initCandidates[1])
 		.tidymsg(msg)
 	}
 	
