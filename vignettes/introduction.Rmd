@@ -33,6 +33,7 @@ export RESOURCES="/path/to/resources/"
 A data analysis project is a collection of R scripts. We assume that you have a folder for each project where you keep these R scripts. Start each script with this code:
 
 ```{r}
+library("projectInit")
 projectInit("project_name")
 ```
 
