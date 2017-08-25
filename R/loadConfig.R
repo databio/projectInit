@@ -1,8 +1,8 @@
 #' used for my internal project naming scheme. 
 #' returns a config file at a default location,
 #' given a project name.
-findConfigFile = function(projectFolder, nameConfigFile = NULL, 
-							projectName = NULL) {
+findConfigFile = function(projectFolder, nameConfigFile=NULL, 
+							projectName=NULL) {
 
 	# First, form the relative filepaths to consider as config file candidates.
 	filenames = c("config.yaml", "project_config.yaml", "pconfig.yaml")    # Defaults
@@ -23,8 +23,8 @@ findConfigFile = function(projectFolder, nameConfigFile = NULL,
 	# Within current project directory, find the first configuration
 	# file that exists from among a pool of config file names.
 	tryCatch( { 
-		ensureAbsolute = pryr::partial(.makeAbsPath, parent = projectFolder)
-		cfgFile = firstExtantFile(files = candidates, modify = ensureAbsolute)
+		ensureAbsolute = pryr::partial(.makeAbsPath, parent=projectFolder)
+		cfgFile = firstExtantFile(files=candidates, modify=ensureAbsolute)
 		return(cfgFile)
 	}, error = function(e) {
 		message("Can't find config file.")
@@ -45,7 +45,7 @@ findConfigFile = function(projectFolder, nameConfigFile = NULL,
 # Returns:
 #   (Absolute) path to the first element that exists. NA if 
 #   no element considered resolves to valid filesystem location.
-firstExtantFile = function(files, modify = identity) {
+firstExtantFile = function(files, modify=identity) {
 
 	fileExists = function(fpath) { file_test("-f", fpath) }
 

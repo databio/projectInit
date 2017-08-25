@@ -4,7 +4,7 @@
 #' @author Nathan Sheffield
 #' @import devtools
 #'
-#' @references \url{http://github.com/databio/project.init}
+#' @references \url{http://github.com/databio/projectInit}
 NULL
 
 
@@ -23,7 +23,7 @@ NULL
 #'                     stores the scripts for this project.
 #' @export
 projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
-						resources=Sys.getenv("RESOURCES"), scriptSubdir = "src") {
+						resources=Sys.getenv("RESOURCES"), scriptSubdir="src") {
 
 	if (identical("", resources) | is.null(resources)) {
 		stop(strwrap("Supply RESOURCES argument to project.init() or set 
@@ -39,7 +39,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	}
 
 	if (!is.null(outputSubdir)){
-		.nicemsg("Found subdir: ", outputSubdir)
+		.tidymsg("Found subdir: ", outputSubdir)
 		project.init::setOutputSubdir(outputSubdir)
 	}
 
@@ -94,7 +94,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 		if (file_test("-f", projectScript)) {
 			message(sprintf("Initializing: '%s'...", projectScript))
 			source(projectScript)
-			options(PROJECT.INIT = projectScript)
+			options(PROJECT.INIT=projectScript)
 			initialized = TRUE
 			break
 		}
@@ -102,7 +102,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	if (!initialized) {
 		msg = sprintf(
 			"No project init script. If you write '%s', it's loaded automatically by projectInit.", init_candidates[1])
-		.nicemsg(msg)
+		.tidymsg(msg)
 	}
 	
 	return(prj)

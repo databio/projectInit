@@ -123,14 +123,14 @@
 }
 
 
-.nicetxt = function(...) {
+.tidytxt = function(...) {
 	paste(strwrap(paste(..., collapse=" ")), collapse="\n")
 }
 
-.nicewrn = function(...) {
-	warning(.nicetxt(...))
+.tidywrn = function(...) {
+	warning(.tidytxt(...))
 }
 
-.nicemsg = function(...) { 
-	message(.nicetxt(...))
+.tidymsg = function(...) { 
+	message(.tidytxt(...))
 }
