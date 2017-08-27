@@ -2,14 +2,28 @@
 % Please edit documentation in R/loadConfig.R
 \name{findConfigFile}
 \alias{findConfigFile}
-\title{used for my internal project naming scheme. 
-returns a config file at a default location,
-given a project name.}
+\title{Locator of config file for a project.}
 \usage{
 findConfigFile(projectFolder, nameConfigFile = NULL, projectName = NULL)
 }
+\arguments{
+\item{projectFolder:}{Path to folder for project.}
+
+\item{nameConfigFile:}{Specific config file name, given top priority for 
+the search.}
+
+\item{projectName:}{Name for the project, from which a secondary 
+high-priority config file name is derived.}
+}
+\value{
+Path to the top-prioirty config file found; \code{NULL} if no 
+        config file could be found.
+}
 \description{
-used for my internal project naming scheme. 
-returns a config file at a default location,
-given a project name.
+\code{findConfigFile} returns the path to a config file for a project 
+given a particular folder. It allows a \code{projectName} or a 
+\code{nameConfigFile} to take precedence in the search, but it searches
+for files with suitable config-like default names. It also allows a 
+\code{projectName} with which to create another high-priority filename 
+to look for.
 }
