@@ -38,11 +38,6 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 
 	}
 
-	if (!is.null(outputSubdir)){
-		.tidymsg("Found subdir: ", outputSubdir)
-		projectInit::setOutputSubdir(outputSubdir)
-	}
-
 	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"),
 								default=getwd())
 	PROCESSED.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
@@ -63,6 +58,13 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 
 	.initDirs()
 	.initOptions()
+
+
+	if (!is.null(outputSubdir)){
+		.tidymsg("Found subdir: ", outputSubdir)
+		projectInit::setOutputSubdir(outputSubdir)
+	}
+
 
 	# Initialize config file if we can find one
 	prj = NULL  # default value in case config is not found
