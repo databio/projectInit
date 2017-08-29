@@ -16,8 +16,7 @@
 #' @param perhapsRelative: Path to primary target directory.
 #' @param  parent: Path to parent folder to use if target isn't absolute.
 #
-#' @return Absolute path
-# Target itself if already absolute, else target nested within parent.
+#' @return Target itself if already absolute, else target nested within parent.
 .makeAbsPath = function(perhapsRelative, parent) {
 	if (.isAbsolute(perhapsRelative)) {
 		abspath = perhapsRelative
@@ -34,6 +33,7 @@
 
 
 #' Make suggestion about configuring an environment variable.
+#'
 #' @param varname	Name of environment variable to suggest setting.
 #' @return	Message about benefit of setting the given environment variable.
 .niceGetEnv = function(varname) {
