@@ -8,17 +8,15 @@ vignette: >
 output: knitr:::html_vignette
 ---
 
-# An introduction to projectInit
-
 `projectInit` is an R package that helps you load a project-specific R workspace. It reads environment variables to coordinate your working directory, code location, raw data folders, and output folders. It then provides universal function so you don't have to worry about keeping track of annoying file path bookkeeping, but can concentrate on your R code instead. This lets you easily work in different environments and share inputs and outputs across sessions and across users.
 
 ## Environment setup
 
 The package relies on shell environment variables you have set up to define where you store different classes of data (*e.g.* input data, output plots, code, shared resources, etc.).  The specific variables used by `projectInit` are:
 
-**$CODE** - Pointer to the collection of project folders where code is kept (*e.g.* each folder a git repository)
-**$PROCESSED** - Pointer to the common shared resources directory
-**$RESOURCES** - Pointer to the 'processed data' filesystem
+*$CODE* - Pointer to the collection of project folders where code is kept (*e.g.* each folder a git repository)
+*$PROCESSED* - Pointer to the common shared resources directory
+*$RESOURCES* - Pointer to the 'processed data' filesystem
 
 So, for instance, you could add this to your `.bashrc` to populate these locations for your computing environment:
 
