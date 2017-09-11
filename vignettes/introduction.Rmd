@@ -8,17 +8,15 @@ vignette: >
 output: knitr:::html_vignette
 ---
 
-# An introduction to projectInit
-
 `projectInit` is an R package that helps you load a project-specific R workspace. It reads environment variables to coordinate your working directory, code location, raw data folders, and output folders. It then provides universal function so you don't have to worry about keeping track of annoying file path bookkeeping, but can concentrate on your R code instead. This lets you easily work in different environments and share inputs and outputs across sessions and across users.
 
 ## Environment setup
 
 The package relies on shell environment variables you have set up to define where you store different classes of data (*e.g.* input data, output plots, code, shared resources, etc.).  The specific variables used by `projectInit` are:
 
-**$CODE** - Pointer to the collection of project folders where code is kept (*e.g.* each folder a git repository)
-**$PROCESSED** - Pointer to the common shared resources directory
-**$RESOURCES** - Pointer to the 'processed data' filesystem
+- `$CODE` - Pointer to the collection of project folders where code is kept (*e.g.* each folder a git repository)
+- `$PROCESSED` - Pointer to the common shared resources directory
+- `$RESOURCES` - Pointer to the 'processed data' filesystem
 
 So, for instance, you could add this to your `.bashrc` to populate these locations for your computing environment:
 
@@ -41,11 +39,11 @@ This will do a number of things:
 
 1. Changes your working directory to ${CODE}/project_name
 
-2. Populates an output variable to ${PROCESSED}/project_name
+2. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/00-init.R`.
 
-3. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/00-init.R`.
-
-4. Populates a project-level cache directory at `${PROCESSED}/project_name/RCache`. This variable is read as the default by R package `simpleCache`, so your caches will now be stored in a specified cache directory for this project.
+3. Populates several project-level variables:
+- an processed data folder at ${PROCESSED}/project_name
+- a project-level cache directory at `${PROCESSED}/project_name/RCache`. This variable is read as the default by R package `simpleCache`, so your caches will now be stored in a specified cache directory for this project.
 
 With these environment variables set, you now have access to easy functions to locate input and direct output without worrying about file paths. 
 

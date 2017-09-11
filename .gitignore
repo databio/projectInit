@@ -2,6 +2,8 @@
 /apps
 /src
 
+
+/docs
 #Ignore all data files but not subdirectory:
 /data/*
 /RCache/*

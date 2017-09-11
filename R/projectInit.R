@@ -69,7 +69,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	# Initialize config file if we can find one
 	prj = NULL  # default value in case config is not found
 	cfgFile = findConfigFile(PROJECT.DIR)
-	if (!is.null(cfgFile) & !is.na(cfgFile)){
+	if (!is.null(cfgFile)){
 		message("Found config file: ", cfgFile)
 		if (requireNamespace("pepr")) {
 			prj = pepr::Project(cfgFile)
