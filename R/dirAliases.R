@@ -81,11 +81,11 @@ dirWrapOpt = function(var, ..., sub=NULL) {
 
 # paste0() if given no values returns character(0); this doesn't play
 # nicely with file.path, which returns bad value if any of the values are
-# bad, instead of ignoring them. This changes the default output to an 
+# bad, instead of ignoring them. This function changes the default output to an 
 # empty string so it can be passed to file.path without problems.
 .sanitizeUserPath = function(...) {
 	userPath = paste0(...)
-	if (identical(userPath,character(0))) {
+	if (identical(userPath, character(0))) {
 		# for a blank function call; that's allowed, give parent dir.
 		userPath = ""
 	}
@@ -99,13 +99,13 @@ dirWrapOpt = function(var, ..., sub=NULL) {
 #'
 #' @export
 createOutputSubdir = function(...) {
-	dir.create(dirOut(...), showWarnings=FALSE, recursive=TRUE)
+	dir.create(dirProc(...), showWarnings=FALSE, recursive=TRUE)
 }
 
 #' Creates and sets outputSubdir
 #' @export
 setOutputSubdir = function(...) {
-	dir.create(dirOut(...), showWarnings=FALSE, recursive=TRUE)
+	dir.create(dirProc(...), showWarnings=FALSE, recursive=TRUE)
 	.setOption("ROUT.SUBDIR", ...)
 }
 #' Helper function to silently create a subdirectory in the parent project
