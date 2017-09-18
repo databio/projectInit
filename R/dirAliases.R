@@ -13,7 +13,7 @@ dirOut = function(...) {
 			"consider invoking 'projectInit' to establish that and other options.")
 	}
 	if (is.null(getOption("ROUT.SUBDIR"))) {
-		return(dirWrapOpt("ROUT.DIR", ...))
+		return(dirOutRoot(...))
 	} else {
 		return(dirWrapOpt("ROUT.DIR", sub=getOption("ROUT.SUBDIR"), ...))
 	}
