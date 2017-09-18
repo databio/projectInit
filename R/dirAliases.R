@@ -21,7 +21,7 @@ dirOut = function(...) {
 
 # output dir without any subdir.
 dirOutRoot = function(...) {
-	dirWrapOpt("ROUT.DIR", ...))
+	dirWrapOpt("ROUT.DIR", ...)
 }
 
 #' Data Dir
