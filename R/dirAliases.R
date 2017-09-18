@@ -19,6 +19,11 @@ dirOut = function(...) {
 	}
 }
 
+# output dir without any subdir.
+dirOutRoot = function(...) {
+	dirWrapOpt("ROUT.DIR", ...))
+}
+
 #' Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
@@ -99,13 +104,13 @@ dirWrapOpt = function(var, ..., sub=NULL) {
 #'
 #' @export
 createOutputSubdir = function(...) {
-	dir.create(dirProc(...), showWarnings=FALSE, recursive=TRUE)
+	dir.create(dirOutRoot(...), showWarnings=FALSE, recursive=TRUE)
 }
 
 #' Creates and sets outputSubdir
 #' @export
 setOutputSubdir = function(...) {
-	dir.create(dirProc(...), showWarnings=FALSE, recursive=TRUE)
+	dir.create(dirOutRoot(...), showWarnings=FALSE, recursive=TRUE)
 	.setOption("ROUT.SUBDIR", ...)
 }
 #' Helper function to silently create a subdirectory in the parent project
