@@ -76,9 +76,13 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 		}
 	}
 
-	if (requireNamespace("RGenomeUtils") & !is.null(prj) ) {
-		message("Loading project variables into shared variables environment...")
-		RGenomeUtils::eload(RGenomeUtils::nlist(prj))
+	if (requireNamespace("RGenomeUtils")) {
+		if (!is.null(prj)) {
+			message("Loading project variables into shared variables environment...")
+			RGenomeUtils::eload(RGenomeUtils::nlist(prj))
+		} else {
+			message("Project is null; no PEP config file?")
+		}
 	} else {
 		message("No RGenomeUtils, skipping project variables' storage")
 	}
