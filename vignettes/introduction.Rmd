@@ -8,17 +8,15 @@ vignette: >
 output: knitr:::html_vignette
 ---
 
-# An introduction to projectInit
-
-`projectInit` is an R package that helps you load a project-specific R workspace. It reads environment variables to coordinate your working directory, code location, raw data folders, and output folders. It then provides universal function so you don't have to worry about keeping track of annoying file path bookkeeping, but can concentrate on your R code instead. This lets you easily work in different environments and share inputs and outputs across sessions and across users.
+`projectInit` is an R package that helps you load a project-specific R workspace. It reads environment variables to coordinate your working directory, code location, raw data folders, and output folders. It then provides universal functions to access those directories, so you don't have to worry about keeping track of annoying file path bookkeeping, but can concentrate on your R code instead. This lets you easily work in different environments and share inputs and outputs across sessions and across users.
 
 ## Environment setup
 
 The package relies on shell environment variables you have set up to define where you store different classes of data (*e.g.* input data, output plots, code, shared resources, etc.).  The specific variables used by `projectInit` are:
 
-**$CODE** - Pointer to the collection of project folders where code is kept (*e.g.* each folder a git repository)
-**$PROCESSED** - Pointer to the common shared resources directory
-**$RESOURCES** - Pointer to the 'processed data' filesystem
+- `$CODE` - Pointer to the collection of project folders where code is kept. Each folder corresponds to a project (for me, each folder is also a git repository)
+- `$PROCESSED` - Pointer to the 'processed data' filesystem
+- `$RESOURCES` - Pointer to the common shared resources directory
 
 So, for instance, you could add this to your `.bashrc` to populate these locations for your computing environment:
 
@@ -28,9 +26,11 @@ export CODE="$HOME/code/"
 export RESOURCES="/path/to/resources/"
 ```
 
+You would just set these up to correct locations for each user and each computer or server, and `projectInit` will handle the rest.
+
 ## Getting started
 
-A data analysis project is a collection of R scripts. We assume that you have a folder for each project where you keep these R scripts. Start each script with this code:
+A data analysis project is a collection of R scripts. We assume that you have a folder for each project where you keep these R scripts, and these folders are each stored in your root `$CODE` folder. Then, you can initialize an R project using `projectInit` with this code:
 
 ```{r}
 library("projectInit")
@@ -39,21 +39,25 @@ projectInit("project_name")
 
 This will do a number of things:
 
-1. Changes your working directory to ${CODE}/project_name
+1. Changes your working directory to `${CODE}/project_name`
 
-2. Populates an output variable to ${PROCESSED}/project_name
+2. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/00-init.R`.
 
-3. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/00-init.R`.
+3. Populates several project-level variables:
+- an processed data folder at ${PROCESSED}/project_name
+- a project-level cache directory at `${PROCESSED}/project_name/RCache`. This variable is read as the default by R package `simpleCache`, so your caches will now be stored in a specified cache directory for this project.
 
-4. Populates a project-level cache directory at `${PROCESSED}/project_name/RCache`. This variable is read as the default by R package `simpleCache`, so your caches will now be stored in a specified cache directory for this project.
+Let's go through some of these in a bit more detail:
 
-With these environment variables set, you now have access to easy functions to locate input and direct output without worrying about file paths. 
 
 ## Initialization script
 
 In the init script (by default at `${CODE}/project_name/00-init.R`), you should put whatever `library()` calls or other things you need that you want to be loaded all the time, for every script in this project. This is also where I define project-level functions that I want to use multiple times in the project, and where I load up project metadata (like sample annotation sheets) and other configuration options.
 
+
 ## Output path functions
+
+The second major thing done by the `projectInit()` function is that it sets global R variables to match your environment variables and provides a series of helper functions to locate input and direct output without worrying about file paths.
 
 For example, try:
 

@@ -38,11 +38,6 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 
 	}
 
-	if (!is.null(outputSubdir)){
-		.tidymsg("Found subdir: ", outputSubdir)
-		projectInit::setOutputSubdir(outputSubdir)
-	}
-
 	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"),
 								default=getwd())
 	PROCESSED.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
@@ -64,19 +59,30 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 	.initDirs()
 	.initOptions()
 
+
+	if (!is.null(outputSubdir)){
+		.tidymsg("Found subdir: ", outputSubdir)
+		projectInit::setOutputSubdir(outputSubdir)
+	}
+
+
 	# Initialize config file if we can find one
 	prj = NULL  # default value in case config is not found
 	cfgFile = findConfigFile(PROJECT.DIR)
-	if (!is.null(cfgFile) & !is.na(cfgFile)){
+	if (!is.null(cfgFile)){
 		message("Found config file: ", cfgFile)
 		if (requireNamespace("pepr")) {
 			prj = pepr::Project(cfgFile)
 		}
 	}
 
-	if (requireNamespace("RGenomeUtils") & !is.null(prj) ) {
-		message("Loading project variables into shared variables environment...")
-		RGenomeUtils::eload(RGenomeUtils::nlist(prj))
+	if (requireNamespace("RGenomeUtils")) {
+		if (!is.null(prj)) {
+			message("Loading project variables into shared variables environment...")
+			RGenomeUtils::eload(RGenomeUtils::nlist(prj))
+		} else {
+			message("Project is null; no PEP config file?")
+		}
 	} else {
 		message("No RGenomeUtils, skipping project variables' storage")
 	}
