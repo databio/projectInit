@@ -10,3 +10,4 @@ go(codeRoot = NULL, dataDir = NULL, outputSubdir = NULL,
 \description{
 Make a secret alias function so I don't have to type so much
 }
+

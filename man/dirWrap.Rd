@@ -11,3 +11,4 @@ dirWrap(var, ..., sub = NULL)
 Generic function to prepend an environment variable directory
 to your relative filepath.
 }
+

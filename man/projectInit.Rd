@@ -4,7 +4,6 @@
 \name{projectInit}
 \alias{projectInit}
 \alias{projectInit-package}
-\alias{projectInit}
 \title{Package docs}
 \usage{
 projectInit(codeRoot = NULL, dataDir = NULL, outputSubdir = NULL,
@@ -30,9 +29,10 @@ Package docs
 \code{projectInit} sources the \code{00-init.R} or \code{projectInit.R} 
 script for the project. You pass a complete folder or a relative path.
 }
-\references{
-\url{http://github.com/databio/projectInit}
-}
 \author{
 Nathan Sheffield
 }
+\references{
+\url{http://github.com/databio/projectInit}
+}
+

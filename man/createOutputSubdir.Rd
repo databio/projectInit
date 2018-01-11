@@ -11,3 +11,4 @@ createOutputSubdir(...)
 Helper function to silently create a subdirectory in the project
 output directory.
 }
+
