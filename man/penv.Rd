@@ -9,4 +9,3 @@ penv()
 \description{
 Displays the environment variables that are set and used by this package.
 }
-

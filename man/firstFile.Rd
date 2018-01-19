@@ -19,4 +19,3 @@ firstFile(files, modify = identity)
 \code{firstFile} examines the filesystem and selects the first file
 from the given sequence that exists on it.
 }
-

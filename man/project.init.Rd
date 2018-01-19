@@ -10,4 +10,3 @@ project.init(codeRoot = NULL, dataDir = NULL, outputSubdir = NULL,
 \description{
 Alias for backward compatibility
 }
-

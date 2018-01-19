@@ -11,4 +11,3 @@ createRootSubdir(...)
 Helper function to silently create a subdirectory in the parent project
 directory (the processed data directory).
 }
-

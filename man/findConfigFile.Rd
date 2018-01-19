@@ -27,4 +27,3 @@ for files with suitable config-like default names. It also allows a
 \code{projectName} with which to create another high-priority filename 
 to look for.
 }
-

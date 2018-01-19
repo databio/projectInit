@@ -9,4 +9,3 @@ setOutputSubdir(...)
 \description{
 Creates and sets outputSubdir
 }
-

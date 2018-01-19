@@ -25,4 +25,3 @@ Detach a custom packages, re-document, re-install, and re-load.
 Useful if I'm debugging packages and want to try the new version.
 Expects it to be in the ${CODE} folder by default
 }
-

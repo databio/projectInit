@@ -7,16 +7,17 @@ Authors@R: c(person("Nathan", "Sheffield", email = "nathan@code.databio.org",
     role = c("aut", "cre")))
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
 Description: Makes it easy to initialize a customized workspace, relying on
-    shell environment variables to point easy function aliases so you can control
-    project-specific results directories, data inputs, shared temporary files, and
-    other resources
+	shell environment variables to point easy function aliases so you can control
+	project-specific results directories, data inputs, shared temporary files, and
+	other resources
 Imports:
     pryr,
     yaml
 Suggests:
-    knitr
-Enhances: Rcpp,
-    roxygen2
+	knitr
+Enhances:
+	Rcpp,
+	roxygen2
 VignetteBuilder: knitr
 License: GPL-3
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
