@@ -202,3 +202,26 @@ penv = function() {
 	value = sapply(nShareOptionsList, getOption)
 	rbind(cbind(envVarsValues), cbind(value))
 }
+
+#' An exportable function
+#' @export
+eload = function(loadDat, loadEnvir="SV") {
+	localEnvir=getLoadEnvir(loadEnvir);
+	alreadyLoaded = ls(localEnvir);
+
+	funList = loadDat;
+	updateVars = intersect(names(funList), alreadyLoaded);
+	newlyLoaded = setdiff(names(funList), alreadyLoaded);
+	oldVars = setdiff(alreadyLoaded, updateVars);
+	#localEnvir = append(funList, localEnvir[ls(localEnvir) %in% oldVars]);
+
+	for(v in names(funList)) {
+		#if(v %in% alreadyLoaded) warning(sprintf("Variable %s is in e1, too!", v))
+		localEnvir[[v]] = funList[[v]]
+	}
+	assign(loadEnvir, localEnvir, pos=globalenv());
+	message("Newly Loaded: ", paste0(newlyLoaded, collapse=", "));
+	message("Updated: ", paste0(updateVars, collapse=", "));
+	message("Unchanged: ", paste0(oldVars, collapse=", "));
+}
+

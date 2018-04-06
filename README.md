@@ -19,10 +19,10 @@ For example, I add this to my `.bashrc`:
 export CODE="$HOME/code/"
 
 # Pointer to the common shared resources directory
-export RESOURCES="/scratch/ns5bc/resources/"
+export RESOURCES="/h4/t1/resources/"
 
 # Pointer to the 'processed data' filesystem
-export PROCESSED="/scratch/ns5bc/processed/"
+export PROCESSED="/sfs/lustre/allocations/shefflab/processed/"
 ```
 
 
