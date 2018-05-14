@@ -14,7 +14,8 @@ NULL
 #' script for the project. You pass a complete folder or a relative path.
 #'
 #' @param codeRoot Path to the folder representing a code repository root.
-#' @param dataDir Path to folder containing project data.
+#' @param dataDir Path to folder containing processed project data.
+#' @param rawDir Path to folder containing raw project data.
 #' @param outputSubdir Location for project-specific output, resolved by 
 #'                     \code{dirOut} and stored as option \code{ROUT.SUBDIR}.
 #' @param resources Location of general-purpose resources; default is to use 
@@ -22,7 +23,7 @@ NULL
 #' @param scriptSubdir Name for the folder within \code{codeRoot} that 
 #'                     stores the scripts for this project.
 #' @export
-projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
+projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NULL,
 						resources=Sys.getenv("RESOURCES"), scriptSubdir="src") {
 
 	if (identical("", resources) | is.null(resources)) {
@@ -35,12 +36,14 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 		# This was previously accomplished with project.init2, but that is
 		# not actually necessary with this update.
 		dataDir = codeRoot
-
 	}
 
 	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"),
 								default=getwd())
 	PROCESSED.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
+		default=PROJECT.DIR)
+
+	RAW.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("RAWDATA"),
 		default=PROJECT.DIR)
 
 	# Finalize the options.
@@ -55,6 +58,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 
 	message("PROJECT.DIR: ", getOption("PROJECT.DIR"))
 	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"))
+	message("RAW.PROJECT: ", getOption("RAW.PROJECT"))
 
 	.initDirs()
 	.initOptions()
@@ -81,7 +85,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 			message("Loading project variables into shared variables environment...")
 			RGenomeUtils::eload(RGenomeUtils::nlist(prj))
 		} else {
-			message("Project is null; no PEP config file?")
+			message("Project is null; no PEP config file in metadata/project_config.yaml")
 		}
 	} else {
 		message("No RGenomeUtils, skipping project variables' storage")
@@ -108,8 +112,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, outputSubdir=NULL,
 		}
 	}
 	if (!initialized) {
-		msg = sprintf(.tidytxt("No project init script. If you write '%s', 
-			it's loaded automatically by projectInit."), initCandidates[1])
+		msg = sprintf(.tidytxt("No project init script: '%s'."), initCandidates[1])
 		.tidymsg(msg)
 	}
 	

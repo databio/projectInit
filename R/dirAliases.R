@@ -10,7 +10,7 @@ dirOut = function(...) {
 	outdir = getOption("ROUT.DIR")
 	if (is.null(outdir)) {
 		warning("Null output dir 'ROUT.DIR';", 
-			"consider invoking 'projectInit' to establish that and other options.")
+			"consider invoking 'projectInit()' to establish that and other options.")
 	}
 	if (is.null(getOption("ROUT.SUBDIR"))) {
 		return(dirOutRoot(...))
@@ -43,7 +43,7 @@ dirProc = function(...) {
 #' Helper wrapper to get data for this project.
 #' @export
 dirRaw = function(...) {
-	dirWrap("RAWDATA", ...)
+	dirWrap("RAW.PROJECT", ...)
 }
 
 #' Resource Dir
