@@ -4,8 +4,9 @@
 \alias{project.init}
 \title{Alias for backward compatibility}
 \usage{
-project.init(codeRoot = NULL, dataDir = NULL, outputSubdir = NULL,
-  resources = Sys.getenv("RESOURCES"), scriptSubdir = "src")
+project.init(codeRoot = NULL, dataDir = NULL, rawDir = NULL,
+  outputSubdir = NULL, resources = Sys.getenv("RESOURCES"),
+  scriptSubdir = "src")
 }
 \description{
 Alias for backward compatibility

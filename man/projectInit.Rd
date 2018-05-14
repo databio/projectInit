@@ -7,13 +7,16 @@
 \alias{projectInit}
 \title{Package docs}
 \usage{
-projectInit(codeRoot = NULL, dataDir = NULL, outputSubdir = NULL,
-  resources = Sys.getenv("RESOURCES"), scriptSubdir = "src")
+projectInit(codeRoot = NULL, dataDir = NULL, rawDir = NULL,
+  outputSubdir = NULL, resources = Sys.getenv("RESOURCES"),
+  scriptSubdir = "src")
 }
 \arguments{
 \item{codeRoot}{Path to the folder representing a code repository root.}
 
-\item{dataDir}{Path to folder containing project data.}
+\item{dataDir}{Path to folder containing processed project data.}
+
+\item{rawDir}{Path to folder containing raw project data.}
 
 \item{outputSubdir}{Location for project-specific output, resolved by 
 \code{dirOut} and stored as option \code{ROUT.SUBDIR}.}
