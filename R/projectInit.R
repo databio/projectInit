@@ -49,6 +49,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NU
 	# Finalize the options.
 	options(PROJECT.DIR=PROJECT.DIR)
 	options(PROCESSED.PROJECT=PROCESSED.PROJECT)
+	options(RAW.PROJECT=RAW.PROJECT)
 
 	if (!file.exists(PROJECT.DIR)) {
 		warning("Directory does not exist or is not writable: ", PROJECT.DIR)

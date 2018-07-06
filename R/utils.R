@@ -50,7 +50,7 @@
 #' Returns a full path
 #'
 #' @param target The path to check for seeming absolute-ness.
-#' @param parentEnvVar Name of the environment variable with parent folder candidate.
+#' @param parent Name of the environment variable with parent folder candidate.
 #' @param default Default to use if target is null.
 #' @return \code{target} if it's already absolute, result of \code{when_null()} 
 #'   if \code{target} is null, or joined version of parent candidate stored in 

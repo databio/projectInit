@@ -15,27 +15,29 @@ dirOut = function(...) {
 	if (is.null(getOption("ROUT.SUBDIR"))) {
 		return(dirOutRoot(...))
 	} else {
-		return(dirWrapOpt("ROUT.DIR", sub=getOption("ROUT.SUBDIR"), ...))
+		return(dirWrap("ROUT.DIR", sub=getOption("ROUT.SUBDIR"), ...))
 	}
 }
 
 # output dir without any subdir.
 dirOutRoot = function(...) {
-	dirWrapOpt("ROUT.DIR", ...)
+	dirWrap("ROUT.DIR", ...)
 }
 
-#' Data Dir
+#' Processed Data Dir (old way)
 #' Helper wrapper to get data for this project.
 #' @export
 dirData = function(...) {
-	dirWrapOpt("PROCESSED.PROJECT", ...)
+	dirWrap("PROCESSED.PROJECT", ...)
 }
 
 
+#' Processed Data Dir
+#' Helper wrapper to get data for this project.
+#' @export
 dirProc = function(...) {
-	dirWrapOpt("PROCESSED.PROJECT", ...)
+	dirWrap("PROCESSED.PROJECT", ...)
 }
-
 
 
 
@@ -60,29 +62,8 @@ dirWeb = function(...) {
 	dirWrap("WEB", ...)
 }
 
-#' Generic function to prepend an environment variable directory
-#' to your relative filepath.
-dirWrap = function(var, ..., sub=NULL) {
-	userPath = .sanitizeUserPath(...)
-	if (is.null(sub)) {
-		outputPath = file.path(Sys.getenv(var), userPath)
-	} else {
-		outputPath = file.path(Sys.getenv(var), sub, userPath)
-	}
-	return(outputPath)
-}
 
-# TODO: Standardize to options or envvars?
-# Uses options instead of envs.
-dirWrapOpt = function(var, ..., sub=NULL) {
-	userPath = .sanitizeUserPath(...)
-	if (is.null(sub)) {
-		outputPath = file.path(getOption(var), userPath)
-	} else {
-		outputPath = file.path(getOption(var), sub, userPath)
-	}
-	return(outputPath)
-}
+
 
 # paste0() if given no values returns character(0); this doesn't play
 # nicely with file.path, which returns bad value if any of the values are
