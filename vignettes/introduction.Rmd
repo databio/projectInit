@@ -41,7 +41,7 @@ This will do a number of things:
 
 1. Changes your working directory to `${CODE}/project_name`
 
-2. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/00-init.R`.
+2. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/src/00-init.R`.
 
 3. Populates several project-level variables:
 - an processed data folder at ${PROCESSED}/project_name
@@ -52,7 +52,7 @@ Let's go through some of these in a bit more detail:
 
 ## Initialization script
 
-In the init script (by default at `${CODE}/project_name/00-init.R`), you should put whatever `library()` calls or other things you need that you want to be loaded all the time, for every script in this project. This is also where I define project-level functions that I want to use multiple times in the project, and where I load up project metadata (like sample annotation sheets) and other configuration options.
+In the init script (by default at `${CODE}/project_name/src/00-init.R`), you should put whatever `library()` calls or other things you need that you want to be loaded all the time, for every script in this project. This is also where I define project-level functions that I want to use multiple times in the project, and where I load up project metadata (like sample annotation sheets) and other configuration options.
 
 
 ## Output path functions

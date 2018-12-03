@@ -22,9 +22,10 @@ NULL
 #'                  system environment variable \code{RESOURCES}.
 #' @param scriptSubdir Name for the folder within \code{codeRoot} that 
 #'                     stores the scripts for this project.
+#' @param subproject name of the subproject to be activated
 #' @export
 projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NULL,
-						resources=Sys.getenv("RESOURCES"), scriptSubdir="src") {
+						resources=Sys.getenv("RESOURCES"), scriptSubdir="src", subproject=character()) {
 
 	if (identical("", resources) | is.null(resources)) {
 		stop(strwrap("Supply RESOURCES argument to projectInit() or set 
@@ -77,7 +78,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NU
 	if (!is.null(cfgFile)){
 		message("Found config file: ", cfgFile)
 		if (requireNamespace("pepr")) {
-			prj = pepr::Project(cfgFile)
+			prj = pepr::Project(cfgFile, subproject)
 		}
 	}
 
