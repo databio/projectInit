@@ -4,7 +4,8 @@
 \alias{findConfigFile}
 \title{Locator of config file for a project.}
 \usage{
-findConfigFile(projectFolder, nameConfigFile = NULL, projectName = NULL)
+findConfigFile(projectFolder, nameConfigFile = NULL,
+  projectName = NULL)
 }
 \arguments{
 \item{projectFolder:}{Path to folder for project.}

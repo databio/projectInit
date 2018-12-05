@@ -6,7 +6,7 @@
 \usage{
 project.init(codeRoot = NULL, dataDir = NULL, rawDir = NULL,
   outputSubdir = NULL, resources = Sys.getenv("RESOURCES"),
-  scriptSubdir = "src")
+  scriptSubdir = "src", subproject = NULL)
 }
 \description{
 Alias for backward compatibility

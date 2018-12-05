@@ -4,12 +4,11 @@
 \name{projectInit}
 \alias{projectInit}
 \alias{projectInit-package}
-\alias{projectInit}
 \title{Package docs}
 \usage{
 projectInit(codeRoot = NULL, dataDir = NULL, rawDir = NULL,
   outputSubdir = NULL, resources = Sys.getenv("RESOURCES"),
-  scriptSubdir = "src")
+  scriptSubdir = "src", subproject = NULL)
 }
 \arguments{
 \item{codeRoot}{Path to the folder representing a code repository root.}
@@ -26,10 +25,10 @@ system environment variable \code{RESOURCES}.}
 
 \item{scriptSubdir}{Name for the folder within \code{codeRoot} that 
 stores the scripts for this project.}
+
+\item{subproject}{name of the subproject to be activated}
 }
 \description{
-Package docs
-
 \code{projectInit} sources the \code{00-init.R} or \code{projectInit.R} 
 script for the project. You pass a complete folder or a relative path.
 }

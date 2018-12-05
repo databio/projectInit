@@ -25,7 +25,7 @@ NULL
 #' @param subproject name of the subproject to be activated
 #' @export
 projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NULL,
-						resources=Sys.getenv("RESOURCES"), scriptSubdir="src", subproject=character()) {
+						resources=Sys.getenv("RESOURCES"), scriptSubdir="src", subproject=NULL) {
 
 	if (identical("", resources) | is.null(resources)) {
 		stop(strwrap("Supply RESOURCES argument to projectInit() or set 
@@ -39,21 +39,16 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NU
 		dataDir = codeRoot
 	}
 
-	PROJECT.DIR = .selectPath(codeRoot, parent=.niceGetEnv("CODE"),
-								default=getwd())
-	PROCESSED.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
-		default=PROJECT.DIR)
+  # Finalize the options.
+  options(PROJECT.DIR=.selectPath(codeRoot, parent=.niceGetEnv("CODE"),
+                                    default=getwd()))
+  options(PROCESSED.PROJECT=.selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
+                                          default=PROJECT.DIR))
+  options(RAW.PROJECT=.selectPath(dataDir, parent=.niceGetEnv("RAWDATA"),
+                                    default=PROJECT.DIR))
 
-	RAW.PROJECT = .selectPath(dataDir, parent=.niceGetEnv("RAWDATA"),
-		default=PROJECT.DIR)
-
-	# Finalize the options.
-	options(PROJECT.DIR=PROJECT.DIR)
-	options(PROCESSED.PROJECT=PROCESSED.PROJECT)
-	options(RAW.PROJECT=RAW.PROJECT)
-
-	if (!file.exists(PROJECT.DIR)) {
-		warning("Directory does not exist or is not writable: ", PROJECT.DIR)
+	if (!file.exists(getOption("PROJECT.DIR"))) {
+		warning("Directory does not exist or is not writable: ", getOption("PROJECT.DIR"))
 	} else {
 		setwd(getOption("PROJECT.DIR"))
 	}
@@ -74,7 +69,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NU
 
 	# Initialize config file if we can find one
 	prj = NULL  # default value in case config is not found
-	cfgFile = findConfigFile(PROJECT.DIR)
+	cfgFile = findConfigFile(getOption("PROJECT.DIR"))
 	if (!is.null(cfgFile)){
 		message("Found config file: ", cfgFile)
 		if (requireNamespace("pepr")) {
@@ -87,7 +82,7 @@ projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NU
 			message("Loading project variables into shared variables environment...")
 			RGenomeUtils::eload(RGenomeUtils::nlist(prj))
 		} else {
-			message("Project is null; no PEP config file in metadata/project_config.yaml")
+			message("Project is null; no PEP config file in ", file.path(getOption("PROJECT.DIR"), "metadata"))
 		}
 	} else {
 		message("No RGenomeUtils, skipping project variables' storage")
