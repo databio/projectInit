@@ -20,65 +20,32 @@ dirOut = function(...) {
 }
 
 # output dir without any subdir.
-dirOutRoot = function(...) {
-	dirWrap("ROUT.DIR", ...)
-}
+dirOutRoot = function(...) inff("ROUT.DIR", ...)
 
 #' Processed Data Dir (old way)
 #' Helper wrapper to get data for this project.
 #' @export
-dirData = function(...) {
-	dirWrap("PROCESSED.PROJECT", ...)
-}
-
+dirData = function(...) inff("PROCESSED.PROJECT", ...)
 
 #' Processed Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirProc = function(...) {
-	dirWrap("PROCESSED.PROJECT", ...)
-}
-
-
+dirProc = function(...) inff("PROCESSED.PROJECT", ...)
 
 #' Raw Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirRaw = function(...) {
-	dirWrap("RAW.PROJECT", ...)
-}
+dirRaw = function(...) inff("RAW.PROJECT", ...)
 
 #' Resource Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirRes = function(...) {
-	dirWrap("RESOURCES", ...)
-}
+dirRes = function(...) inff("RESOURCES", ...)
 
 #' Web Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirWeb = function(...) {
-	dirWrap("WEB", ...)
-}
-
-
-
-
-# paste0() if given no values returns character(0); this doesn't play
-# nicely with file.path, which returns bad value if any of the values are
-# bad, instead of ignoring them. This function changes the default output to an 
-# empty string so it can be passed to file.path without problems.
-.sanitizeUserPath = function(...) {
-	userPath = paste0(...)
-	if (identical(userPath, character(0))) {
-		# for a blank function call; that's allowed, give parent dir.
-		userPath = ""
-	}
-	return(userPath)
-}
-
-
+dirWeb = function(...) inff("WEB", ...)
 
 #' Helper function to silently create a subdirectory in the project
 #' output directory.
@@ -92,7 +59,7 @@ createOutputSubdir = function(...) {
 #' @export
 setOutputSubdir = function(...) {
 	dir.create(dirOutRoot(...), showWarnings=FALSE, recursive=TRUE)
-	.setOption("ROUT.SUBDIR", ...)
+	setff("ROUT.SUBDIR", ...)
 }
 #' Helper function to silently create a subdirectory in the parent project
 #' directory (the processed data directory).

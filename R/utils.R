@@ -77,39 +77,24 @@
 }
 
 
-# Random utils
-
 .isDefined = function(var) { ! (is.na(var) | is.null(var)) }
 
-
-#' Sets an option value if it's not already set.
-#'
-#' @param option Name of option
-#' @param value Value to set it to
-#' @param force overwrite if already set.
-.setOption = function(option, value, force = TRUE) {
-	if(is.null(getOption(option)) || force) {
-		optionsToSet = list(value)
-		names(optionsToSet) = option
-		options(optionsToSet)
-	}
-}
 
 # Populate default local directories
 # These need not change, unless you want to adjust
 # the default relative folder directory structure.
 .initDirs = function() {
 		# Set defaults:
-	.setOption("ROUT.DIR", file.path(getOption("PROCESSED.PROJECT"), "analysis"))
+	setff("ROUT.DIR", file.path(getOption("PROCESSED.PROJECT"), "analysis"))
 
 	# Global RData cache
-	.setOption("RESOURCES.RCACHE", file.path(Sys.getenv("RESOURCES"), "cache", "RCache"))
+	setff("RESOURCES.RCACHE", file.path(Sys.getenv("RESOURCES"), "cache", "RCache"))
 
 	# Project RData cache
-	.setOption("RCACHE.DIR", file.path(getOption("PROCESSED.PROJECT"), "RCache")) 
+	setff("RCACHE.DIR", file.path(getOption("PROCESSED.PROJECT"), "RCache")) 
 
 	# Should deprecate these ones:
-	.setOption("RBUILD.DIR", file.path(getOption("PROJECT.DIR"), "RBuild"))
+	setff("RBUILD.DIR", file.path(getOption("PROJECT.DIR"), "RBuild"))
 }
 
 # Load basic options (non-project-specific).

@@ -10,6 +10,10 @@ Description: Makes it easy to initialize a customized workspace, relying on
 	shell environment variables to point easy function aliases so you can control
 	project-specific results directories, data inputs, shared temporary files, and
 	other resources
+Remotes:
+    databio/folderfun
+Depends:
+    folderfun
 Imports:
     pryr,
     yaml
