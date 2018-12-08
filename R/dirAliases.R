@@ -20,32 +20,35 @@ dirOut = function(...) {
 }
 
 # output dir without any subdir.
-dirOutRoot = function(...) inff("ROUT.DIR", ...)
+dirOutRoot = function(...) ffROUT.DIR(...)
 
 #' Processed Data Dir (old way)
 #' Helper wrapper to get data for this project.
 #' @export
-dirData = function(...) inff("PROCESSED.PROJECT", ...)
+dirData = function(...) {
+	warning("dirData is deprecated; please use dirProc")
+	dirProc(...)
+}
 
 #' Processed Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirProc = function(...) inff("PROCESSED.PROJECT", ...)
+dirProc = function(...) ffPROCESSED.PROJECT(...)
 
 #' Raw Data Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirRaw = function(...) inff("RAW.PROJECT", ...)
+dirRaw = function(...) ffRAW.PROJECT(...)
 
 #' Resource Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirRes = function(...) inff("RESOURCES", ...)
+dirRes = function(...) ffRESOURCES(...)
 
 #' Web Dir
 #' Helper wrapper to get data for this project.
 #' @export
-dirWeb = function(...) inff("WEB", ...)
+dirWeb = function(...) ffWEB(...)
 
 #' Helper function to silently create a subdirectory in the project
 #' output directory.
