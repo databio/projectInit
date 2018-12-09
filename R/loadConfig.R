@@ -57,8 +57,9 @@ findConfigFile = function(
 
 	# Within current project directory, find the first configuration
 	# file that exists from among a pool of config file names.
-	tryCatch( { 
-		ensureAbsolute = pryr::partial(.makeAbsPath, parent=projectFolder)
+	tryCatch( {
+		ensureAbsolute = function(relpath) {
+			.makeAbsPath(maybeRelpath = relpath, parent = projectFolder) }
 		cfgFile = .firstFile(files=candidates, modify=ensureAbsolute)
 		return(cfgFile)
 	}, error = function(e) {
