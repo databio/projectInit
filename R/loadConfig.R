@@ -42,7 +42,7 @@ findConfigFile = function(
 		return(cfgFile)
 	}, error = function(e) {
 		confPatt = "*_config.yaml"
-		message(sprintf("Did not find fixed-name config (%s); trying match: ", 
+		message(sprintf("Did not find fixed-name config (%s); trying match: %s", 
 			paste0(filenames, collapse = ", "), confPatt))
 		suffixMatches = Sys.glob(.makeAbsPath(
 			perhapsRelative = file.path("metadata", confPatt), parent = projectFolder))
