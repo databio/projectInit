@@ -41,8 +41,17 @@ findConfigFile = function(
 		cfgFile = firstFile(files=candidates, modify=ensureAbsolute)
 		return(cfgFile)
 	}, error = function(e) {
-		message("Can't find config file.")
-		return()
+		confPatt = "*_config.yaml"
+		message(sprintf("Did not find fixed-name config (%s); trying match: ", 
+			paste0(filenames, collapse = ", "), confPatt))
+		suffixMatches = Sys.glob(.makeAbsPath(
+			perhapsRelative = file.path("metadata", confPatt), parent = projectFolder))
+		numConfMatch = length(suffixMatches)
+		if (numConfMatch == 1) suffixMatches else {
+			ctx = if (numConfMatch > 1) sprintf("Multiple (%d) config pattern matches: %s", 
+				numConfMatch, paste0(suffixMatches, collapse = ", ")) else "No config matches"
+			message("Can't determine config file (%s)", ctx)
+		}
 	})
 }
 
