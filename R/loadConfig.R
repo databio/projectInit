@@ -1,3 +1,24 @@
+# File: loadConfig.R
+# Tool to facilitate--using common naming conventions--finding project 
+# configuration file.
+
+
+#' Locator of first file from given sequence that exists.
+#'
+#' \code{.firstFile} examines the filesystem and selects the first file
+#' from the given sequence that exists on it.
+#'
+#' @param files: The sequence file names or paths to consider.
+#' @param modify: How to modify each file before checking existence.
+#' @return (Absolute) path to the first file that exists.
+#'         \code{NULL} if there isn't one.
+.firstFile = function(files, modify=identity) {
+	fileExists = function(fpath) { file_test("-f", fpath) }
+	modified = sapply(files, modify)
+	for (modpath in modified) { if (file_test("-f", modpath)) return(modpath) }
+}
+
+
 #' Locator of config file for a project.
 #'
 #' \code{findConfigFile} returns the path to a config file for a project 
@@ -36,29 +57,23 @@ findConfigFile = function(
 
 	# Within current project directory, find the first configuration
 	# file that exists from among a pool of config file names.
-	tryCatch( { 
-		ensureAbsolute = pryr::partial(.makeAbsPath, parent=projectFolder)
-		cfgFile = firstFile(files=candidates, modify=ensureAbsolute)
+	tryCatch( {
+		ensureAbsolute = function(relpath) {
+			.makeAbsPath(maybeRelpath = relpath, parent = projectFolder) }
+		cfgFile = .firstFile(files=candidates, modify=ensureAbsolute)
 		return(cfgFile)
 	}, error = function(e) {
-		message("Can't find config file.")
-		return()
+		confPatt = "*_config.yaml"
+		message(sprintf("Did not find fixed-name config (%s); trying match: %s", 
+			paste0(filenames, collapse = ", "), confPatt))
+		suffixMatches = Sys.glob(.makeAbsPath(
+			perhapsRelative = file.path("metadata", confPatt), parent = projectFolder))
+		numConfMatch = length(suffixMatches)
+		if (numConfMatch == 1) { return(suffixMatches) }
+		else {
+			ctx = if (numConfMatch > 1) sprintf("Multiple (%d) config pattern matches: %s", 
+				numConfMatch, paste0(suffixMatches, collapse = ", ")) else "No config matches"
+			message("Can't determine config file (%s)", ctx)
+		}
 	})
 }
-
-
-#' Locator of first file from given sequence that exists.
-#'
-#' \code{firstFile} examines the filesystem and selects the first file
-#' from the given sequence that exists on it.
-#'
-#' @param files: The sequence file names or paths to consider.
-#' @param modify: How to modify each file before checking existence.
-#' @return (Absolute) path to the first file that exists.
-#'         \code{NULL} if there isn't one.
-firstFile = function(files, modify=identity) {
-	fileExists = function(fpath) { file_test("-f", fpath) }
-	modified = sapply(files, modify)
-	for (modpath in modified) { if (file_test("-f", modpath)) return(modpath) }
-}
-
