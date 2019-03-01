@@ -14,12 +14,15 @@ Depends:
     folderfun
 Imports:
     pryr,
+    devtools,
     yaml
 Suggests:
-	knitr
+	knitr,
+	loadr
 Enhances:
 	Rcpp,
 	roxygen2
 VignetteBuilder: knitr
+Encoding: UTF-8
 License: GPL-3
 RoxygenNote: 6.1.1

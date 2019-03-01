@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{.selectPath}
 \alias{.selectPath}
-\title{Returns a full path}
+\title{Returns an absolute path}
 \usage{
 .selectPath(target, parent, default)
 }
 \arguments{
-\item{target}{The path to check for seeming absolute-ness.}
+\item{target}{The path to check if absolute.}
 
 \item{parent}{Name of the environment variable with parent folder candidate.}
 
@@ -19,7 +19,7 @@
   \code{env_var} and (relative) \code{target}.
 }
 \description{
-Returns a full path
+Returns an absolute path
 }
 \seealso{
 Other path operations: \code{\link{.isAbsolute}}

@@ -2,8 +2,9 @@
 #' @docType package
 #' @name projectInit
 #' @author Nathan Sheffield
-#' @import devtools
-#'
+#' @import devtools 
+#' @import folderfun
+#' 
 #' @references \url{http://github.com/databio/projectInit}
 NULL
 
@@ -14,106 +15,120 @@ NULL
 #' script for the project. You pass a complete folder or a relative path.
 #'
 #' @param codeRoot Path to the folder representing a code repository root.
-#' @param dataDir Path to folder containing processed project data.
+#' @param procDir Path to folder containing processed project data.
 #' @param rawDir Path to folder containing raw project data.
 #' @param outputSubdir Location for project-specific output, resolved by 
 #'                     \code{dirOut} and stored as option \code{ROUT.SUBDIR}.
-#' @param resources Location of general-purpose resources; default is to use 
+#' @param resourcesRoot Location of general-purpose resourcesRoot; default is to use 
 #'                  system environment variable \code{RESOURCES}.
 #' @param scriptSubdir Name for the folder within \code{codeRoot} that 
 #'                     stores the scripts for this project.
 #' @param subproject name of the subproject to be activated
 #' @export
-projectInit = function(codeRoot=NULL, dataDir=NULL, rawDir=NULL, outputSubdir=NULL,
-						resources=Sys.getenv("RESOURCES"), scriptSubdir="src", subproject=NULL) {
+projectInit = function( projectName,
+                        codeDir=NULL,
+                        procDir=NULL,
+                        rawDir=NULL,
+                        webDir=NULL,
+                        outDir=NULL,
+                        resourcesDir=NULL,
+                        outputSubdir=NULL, #deprecate?
+                        scriptSubdir="src",
+                        projectConfig=NULL,
+                        subproject=NULL) {
 
-	if (identical("", resources) | is.null(resources)) {
-		stop(strwrap("Supply RESOURCES argument to projectInit() or set 
-			global environmental variable RESOURCES before calling."))
-	}
+    if (!is.null(outputSubdir)){
+        .tidymsg("Found subdir: ", outputSubdir)
+        projectInit::setOutputSubdir(outputSubdir)
+    }
 
-	if (is.null(dataDir)) {
-		# Assume that a null data directory means to use the codeRoot variable.
-		# This was previously accomplished with project.init2, but that is
-		# not actually necessary with this update.
-		dataDir = codeRoot
-	}
+    # Keep a record of the function call so re can re-init if necessary.
+    options(LOADEDPROJECT=match.call())
 
-  # Finalize the options.
-  options(PROJECT.DIR=.selectPath(codeRoot, parent=.niceGetEnv("CODE"),
-                                    default=getwd()))
-  options(PROCESSED.PROJECT=.selectPath(dataDir, parent=.niceGetEnv("PROCESSED"),
-                                          default=PROJECT.DIR))
-  options(RAW.PROJECT=.selectPath(dataDir, parent=.niceGetEnv("RAWDATA"),
-                                    default=PROJECT.DIR))
-
-	if (!file.exists(getOption("PROJECT.DIR"))) {
-		warning("Directory does not exist or is not writable: ", getOption("PROJECT.DIR"))
-	} else {
-		setwd(getOption("PROJECT.DIR"))
-	}
-
-	message("PROJECT.DIR: ", getOption("PROJECT.DIR"))
-	message("PROCESSED.PROJECT: ", getOption("PROCESSED.PROJECT"))
-	message("RAW.PROJECT: ", getOption("RAW.PROJECT"))
-
-	.initDirs()
-	.initOptions()
+    # Init options
+    # It drives me nuts when strings get processed as factors.
+    options(stringsAsFactors=FALSE)    # treat strings as strings
+    options(echo=TRUE)                 # show commands (?)
+    options(menu.graphics=FALSE)       # suppress gui selection
+    options(width=130)                 # optimized for full screen width
+    options(scipen=15)                 # turn off scientific notation
 
 
-	if (!is.null(outputSubdir)){
-		.tidymsg("Found subdir: ", outputSubdir)
-		projectInit::setOutputSubdir(outputSubdir)
-	}
+    # 1. Set up folder functions
+    # Here's a little helper function that just sets the folderfun to a specific
+    # location if it was given, but otherwise sets it to the default.
+
+    setffDefault = function(name, path, pathVar, postpend) {
+        if (is.null(path)) {
+            folderfun::setff(name, pathVar=pathVar, postpend=postpend)
+        } else {
+            folderfun::setff(name, path=path)
+        }
+    }
+
+    o = capture.output( { 
+        setffDefault("Code", codeDir, "CODE", projectName)
+        setffDefault("Proc", procDir, "PROCESSED", projectName)
+        setffDefault("Raw", rawDir, "DATA", projectName)
+        setffDefault("Web", webDir, "WEB", projectName)
+        setffDefault("Out", outDir, "PROCESSED", file.path(projectName, "analysis"))
+
+        folderfun::setff("Res", pathVar="RESOURCES")
+        folderfun::setff("ResCache", ffRes(), postpend=file.path("cache", "RCache"))
+        folderfun::setff("Cache", ffProc(), postpend="RCache")
+        folderfun::setff("ProcRoot", pathVar="PROCESSED")
+        folderfun::setff("RawRoot", pathVar="DATA")
+        folderfun::setff("WebRoot", pathVar="WEB")
+        folderfun::setff("OutRoot", pathVar="PROCESSED")
+        folderfun::setff("Build", ffCode(), postpend="RBuild")
+    }, type="message")
+    # 2. Load PEP
+
+    prj = NULL  # default value in case config is not found
 
 
-	# Initialize config file if we can find one
-	prj = NULL  # default value in case config is not found
-	cfgFile = findConfigFile(getOption("PROJECT.DIR"))
-	if (!is.null(cfgFile)){
-		message("Found config file: ", cfgFile)
-		if (requireNamespace("pepr")) {
-			prj = pepr::Project(cfgFile, subproject)
-		}
-	}
+    cfgFile = findConfigFile(ffCode(), projectConfig, projectName)
 
-	if (requireNamespace("RGenomeUtils")) {
-		if (!is.null(prj)) {
-			message("Loading project variables into shared variables environment...")
-			RGenomeUtils::eload(RGenomeUtils::nlist(prj))
-		} else {
-			message("Project is null; no PEP config file in ", file.path(getOption("PROJECT.DIR"), "metadata"))
-		}
-	} else {
-		message("No RGenomeUtils, skipping project variables' storage")
-	}
-		
-	# Finalize the initialization by sourcing the project-specific
-	# initialization script
-	originalInitName = "projectInit.R"
-	projdir = getOption("PROJECT.DIR")
-	scriptsFolder = file.path(projdir, scriptSubdir)
-	initCandidates = sapply(
-		X = c("00-init.R", originalInitName), 
-		FUN = function(s) { file.path(scriptsFolder, s) })
-	initCandidates = append(initCandidates, 
-		file.path(projdir, originalInitName))
-	initialized = FALSE
-	for (projectScript in initCandidates) {
-		if (file_test("-f", projectScript)) {
-			message(sprintf("Initializing: '%s'...", projectScript))
-			source(projectScript)
-			options(PROJECT.INIT=projectScript)
-			initialized = TRUE
-			break
-		}
-	}
-	if (!initialized) {
-		msg = sprintf(.tidytxt("No project init script: '%s'."), initCandidates[1])
-		.tidymsg(msg)
-	}
-	
-	return(prj)
+    if (!is.null(cfgFile)){
+        message("Found config file: ", cfgFile)
+        if (requireNamespace("pepr", quietly=TRUE)) {
+            prj = pepr::Project(cfgFile, subproject)
+           
+            # Use loadr to keep the pep in a shared environment, if installed
+            if (requireNamespace("loadr", quietly=TRUE)) {
+                message("Loading project variables into shared variables environment...")
+                loadr::eload(nlist(prj))
+            } else {
+                message("No loadr package, skipping shared environment loading")
+            }
+        }
+    }
+
+    # Notify if RGenomeUtils is not found.
+
+    if (requireNamespace("RGenomeUtils", quietly=TRUE)) {
+        message("Loaded RGenomeUtils")
+    } else {
+        message("No RGenomeUtils found.")
+    }
+        
+    # 3. Initialize project by calling init script
+    # Finalize the initialization by sourcing the project-specific
+    # initialization script
+    initCandidates = ffCode(scriptSubdir, list("00-init.R", "projectInit.R"))
+    projectScript = .firstFile(files=initCandidates)
+
+    if ( !is.null(projectScript)) {
+        message(sprintf("Initializing: '%s'...", projectScript))
+        source(projectScript)
+        options(PROJECT.INIT=projectScript)
+    } else {
+        msg = sprintf(.tidytxt("No project init script: '%s'."), initCandidates[1])
+        .tidymsg(msg)
+    }
+
+
+    invisible(prj)
 }
 
 #' Alias for backward compatibility
@@ -124,25 +139,23 @@ project.init = projectInit
 #' @export
 project.init2 = projectInit
 
-#' Make a secret alias function so I don't have to type so much
+#' Alias so I don't have to type so much
 #' @export
 go = projectInit
 
 #' Helper alias to re-run init script, using your current dir settings.
 #' @export
 projectRefresh = function() { 
-	if (is.null(getOption("PROJECT.DIR"))) {
-		stop("No loaded project.")
-	}
-	projectInit(codeRoot=getOption("PROJECT.DIR"), 
-		dataDir=getOption("PROCESSED.PROJECT"),
-		outputSubdir=getOption("ROUT.SUBDIR"),
-		resources=Sys.getenv("RESOURCES"))
+    if (is.null(getOption("LOADEDPROJECT"))) {
+        stop("No loaded project.")
+    }
+    message("Re-initializing project...")
+    eval(getOption("LOADEDPROJECT"))
 }
 
 #' Alias
 #' @export
-rp = projectRefresh
+pr = projectRefresh
 
 
 #' Package handling function
@@ -156,72 +169,78 @@ rp = projectRefresh
 #'     code before installing?
 #' @export
 refreshPackage = function(pkg, path=Sys.getenv("CODE"),
-						compileAttributes=TRUE, roxygenize=TRUE) {
-	packageDir = file.path(path, pkg)
-	if (!file.exists(packageDir)) { 
-		stop("Package does not exist: ", packageDir)
-	}
-	if (compileAttributes) {
-		requireNamespace("Rcpp")
-		Rcpp::compileAttributes(packageDir)
-	}
-	if (roxygenize) {
-		#requireNamespace("roxygen2")
-		#roxygen2::roxygenize(packageDir)
-		devtools::document(packageDir)
-	}
-	# devtools::unload is superior because it also unloads dlls, so this
-	# function could work with packages containing c++ code.
-	tryCatch({
-		devtools::unload(packageDir)
-	}, error = function(e) {
-		message(e)
-	} )
-	install.packages(packageDir, repos=NULL)
-	library(pkg, character.only=TRUE)
+                        compileAttributes=TRUE, roxygenize=TRUE) {
+    packageDir = file.path(path, pkg)
+    if (!file.exists(packageDir)) { 
+        stop("Package does not exist: ", packageDir)
+    }
+    if (compileAttributes) {
+        requireNamespace("Rcpp")
+        Rcpp::compileAttributes(packageDir)
+    }
+    if (roxygenize) {
+        #requireNamespace("roxygen2")
+        #roxygen2::roxygenize(packageDir)
+        devtools::document(packageDir)
+    }
+    # devtools::unload is superior because it also unloads dlls, so this
+    # function could work with packages containing c++ code.
+    tryCatch({
+        devtools::unload(packageDir)
+    }, error = function(e) {
+        message(e)
+    } )
+    install.packages(packageDir, repos=NULL)
+    library(pkg, character.only=TRUE)
 }
 
 
-#' Show project environment variables
-#'
-#' Displays the environment variables that are set and used by this package.
-#'@export
-penv = function() {
-	# env variables
-	envVars = c("RAWDATA", "PROCESSED", "RESOURCES", "WEB", "CODE")
-	envVarsValues = sapply(envVars, Sys.getenv)
-	
-	nShareOptionsList = c("PROJECT.DIR", "PROJECT.INIT", 
-		"PROCESSED.PROJECT",
-		"RESOURCES.RCACHE",
-		"RCACHE.DIR",
-		"RBUILD.DIR",
-		"ROUT.DIR",
-		"ROUT.SUBDIR",
-		"RGENOMEUTILS")
-	value = sapply(nShareOptionsList, getOption)
-	rbind(cbind(envVarsValues), cbind(value))
-}
 
-#' An exportable function
+################################################################################
+# DEBUGGING FUNCTIONS
+################################################################################
+
+#' Quick shortcut procedure for toggling error mode (for my convenience)
+#' te for Toggle Error
 #' @export
-eload = function(loadDat, loadEnvir="SV") {
-	localEnvir=getLoadEnvir(loadEnvir);
-	alreadyLoaded = ls(localEnvir);
-
-	funList = loadDat;
-	updateVars = intersect(names(funList), alreadyLoaded);
-	newlyLoaded = setdiff(names(funList), alreadyLoaded);
-	oldVars = setdiff(alreadyLoaded, updateVars);
-	#localEnvir = append(funList, localEnvir[ls(localEnvir) %in% oldVars]);
-
-	for(v in names(funList)) {
-		#if(v %in% alreadyLoaded) warning(sprintf("Variable %s is in e1, too!", v))
-		localEnvir[[v]] = funList[[v]]
-	}
-	assign(loadEnvir, localEnvir, pos=globalenv());
-	message("Newly Loaded: ", paste0(newlyLoaded, collapse=", "));
-	message("Updated: ", paste0(updateVars, collapse=", "));
-	message("Unchanged: ", paste0(oldVars, collapse=", "));
+toggleError = function() {
+    if(is.null(getOption("error"))) {
+        options(error=recover)
+        message("Error mode set to 'recover'")
+    } else{
+        options(error=NULL)
+        message("Error mode set to 'NULL'")
+    }
 }
+#' Alias of toggleError()
+#' @export
+te = toggleError
 
+
+
+#' Nathan's magical named list function.
+#' This function is a drop-in replacement for the base list() function,
+#' which automatically names your list according to the names of the 
+#' variables used to construct it.
+#' It seamlessly handles lists with some names and others absent,
+#' not overwriting specified names while naming any unnamed parameters.
+#' Took me awhile to figure this out.
+#'
+#' @param ...   arguments passed to list()
+#' @return A named list object.
+#' @export
+#' @examples
+#' x=5
+#' y=10
+#' nlist(x,y) # returns list(x=5, y=10)
+#' list(x,y) # returns unnamed list(5, 10)
+nlist = function(...) {
+    fcall = match.call(expand.dots=FALSE)
+    l = list(...)
+    if(!is.null(names(list(...)))) { 
+        names(l)[names(l) == ""] = fcall[[2]][names(l) == ""]
+    } else {    
+        names(l) = fcall[[2]]
+    }
+    return(l)
+}

@@ -6,8 +6,8 @@
 #' @return Flag indicating whether the \code{path} appears to be absolute.
 #' @family path operations
 .isAbsolute = function(path) {
-	firstChar = substr(path, 1, 1)
-	return(identical("/", firstChar) | identical("~", firstChar))
+    firstChar = substr(path, 1, 1)
+    return(identical("/", firstChar) | identical("~", firstChar))
 }
 
 
@@ -18,38 +18,42 @@
 #
 #' @return Target itself if already absolute, else target nested within parent.
 .makeAbsPath = function(perhapsRelative, parent) {
-	if (.isAbsolute(perhapsRelative)) {
-		abspath = perhapsRelative
-	} else {
-		abspath = file.path(parent, perhapsRelative)
-	}
-	if (!.isAbsolute(abspath)) {
-		errmsg = sprintf("Relative path '%s' and parent '%s' failed to create
-			absolute path: '%s'", perhapsRelative, parent, abspath)
-		stop(errmsg)
-	}
-	return(abspath)
+    if (.isAbsolute(perhapsRelative)) {
+        abspath = perhapsRelative
+    } else {
+        abspath = file.path(parent, perhapsRelative)
+    }
+    if (!.isAbsolute(abspath)) {
+        errmsg = sprintf("Relative path '%s' and parent '%s' failed to create
+            absolute path: '%s'", perhapsRelative, parent, abspath)
+        stop(errmsg)
+    }
+    return(abspath)
 }
 
 
 #' Make suggestion about configuring an environment variable.
 #'
-#' @param varname	Name of environment variable to suggest setting.
-#' @return	Message about benefit of setting the given environment variable.
+#' @param varname   Name of environment variable to suggest setting.
+#' @return  Message about benefit of setting the given environment variable.
 .niceGetEnv = function(varname) {
-	value = Sys.getenv(varname)
-	if (identical("", value)) {
-		warning(.nicetxt(sprintf("You should set environment variable %s to use the 
-		shared R utils most effectively. Then you can refer to R projects 
-		with relative paths, making the code portable and sharable.", varname)))
-	}
-	return(value)
+    value = Sys.getenv(varname)
+    if (identical("", value)) {
+        warning(.tidytxt(sprintf("You should set environment variable %s to use the 
+        shared R utils most effectively. Then you can refer to R projects 
+        with relative paths, making the code portable and sharable.", varname)))
+    }
+    return(value)
 }
 
 
-#' Returns a full path
+
+
+
+
+#' Returns an absolute path
 #'
-#' @param target The path to check for seeming absolute-ness.
+#' @param target The path to check if absolute.
 #' @param parent Name of the environment variable with parent folder candidate.
 #' @param default Default to use if target is null.
 #' @return \code{target} if it's already absolute, result of \code{when_null()} 
@@ -57,65 +61,37 @@
 #'   \code{env_var} and (relative) \code{target}.
 #' @family path operations
 .selectPath = function(target, parent, default) {
-	if (is.null(target)) {
-		fullpath = default
-		warning("Using alternative for null target: ", fullpath)
-	} else {
-		if (.isAbsolute(target)) {
-		fullpath = target
-	} else {
-		fullpath = file.path(parent, target)
-	}
-	}
+    if (is.null(target)) {
+        fullpath = default
+        warning("Using alternative for null target: ", fullpath)
+    } else {
+        if (.isAbsolute(target)) {
+            fullpath = target
+        } else {
+            fullpath = file.path(parent, target)
+        }
+    }
 
-	if (!.isAbsolute(fullpath)) {
-		stop(sprintf("Could not make absolute path from primary
-				target %s and parent candidate %s (from %s)",
-				target, parent, parentEnvVar))
-	}
-	return(fullpath)
+    if (!.isAbsolute(fullpath)) {
+        stop(sprintf("Could not make absolute path from primary
+                target %s and parent candidate %s (from %s)",
+                target, parent, parentEnvVar))
+    }
+    return(fullpath)
 }
 
 
 .isDefined = function(var) { ! (is.na(var) | is.null(var)) }
 
 
-# Populate default local directories
-# These need not change, unless you want to adjust
-# the default relative folder directory structure.
-.initDirs = function() {
-		# Set defaults:
-	setff("ROUT.DIR", file.path(getOption("PROCESSED.PROJECT"), "analysis"))
-
-	# Global RData cache
-	setff("RESOURCES.RCACHE", file.path(Sys.getenv("RESOURCES"), "cache", "RCache"))
-
-	# Project RData cache
-	setff("RCACHE.DIR", file.path(getOption("PROCESSED.PROJECT"), "RCache")) 
-
-	# Should deprecate these ones:
-	setff("RBUILD.DIR", file.path(getOption("PROJECT.DIR"), "RBuild"))
-}
-
-# Load basic options (non-project-specific).
-.initOptions = function() {
-	# It drives me nuts when strings get processed as factors.
-	options(stringsAsFactors=FALSE)    # treat strings as strings
-	options(echo=TRUE)                 # show commands (?)
-	options(menu.graphics=FALSE)       # suppress gui selection
-	options(width=130)                 # optimized for full screen width
-	options(scipen=15)                 # turn off scientific notation
-}
-
-
 .tidytxt = function(...) {
-	paste(strwrap(paste(..., collapse=" ")), collapse="\n")
+    paste(strwrap(paste(..., collapse=" ")), collapse="\n")
 }
 
 .tidywrn = function(...) {
-	warning(.tidytxt(...))
+    warning(.tidytxt(...))
 }
 
 .tidymsg = function(...) { 
-	message(.tidytxt(...))
+    message(.tidytxt(...))
 }

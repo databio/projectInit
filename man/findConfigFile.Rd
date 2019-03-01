@@ -4,13 +4,12 @@
 \alias{findConfigFile}
 \title{Locator of config file for a project.}
 \usage{
-findConfigFile(projectFolder, nameConfigFile = NULL,
-  projectName = NULL)
+findConfigFile(projectFolder, projectConfig = NULL, projectName = NULL)
 }
 \arguments{
 \item{projectFolder:}{Path to folder for project.}
 
-\item{nameConfigFile:}{Specific config file name, given top priority for 
+\item{projectConfig:}{Specific config file name, given top priority for 
 the search.}
 
 \item{projectName:}{Name for the project, from which a secondary 
@@ -23,7 +22,7 @@ Path to the top-prioirty config file found; \code{NULL} if no
 \description{
 \code{findConfigFile} returns the path to a config file for a project 
 given a particular folder. It allows a \code{projectName} or a 
-\code{nameConfigFile} to take precedence in the search, but it searches
+\code{projectConfig} to take precedence in the search, but it searches
 for files with suitable config-like default names. It also allows a 
 \code{projectName} with which to create another high-priority filename 
 to look for.
