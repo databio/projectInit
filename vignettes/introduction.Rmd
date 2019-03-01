@@ -32,6 +32,15 @@ You would just set these up to correct locations for each user and each computer
 
 A data analysis project is a collection of R scripts. We assume that you have a folder for each project where you keep these R scripts, and these folders are each stored in your root `$CODE` folder. Then, you can initialize an R project using `projectInit` with this code:
 
+```{r, echo=FALSE}
+# set up vignette to use a temp dir
+options(PROCESSED=file.path(tempdir(), "processed"))
+options(DATA=file.path(tempdir(), "data"))
+options(WEB=file.path(tempdir(), "web"))
+options(CODE=file.path(tempdir(), "code"))
+options(RESOURCES=file.path(tempdir(), "resources"))
+```
+
 ```{r}
 library("projectInit")
 projectInit("project_name")
@@ -65,9 +74,16 @@ For example, try:
 ffOut()
 ```
 
-You can use this convenient function for all your plots. Instead of passing your filename directly to the `pdf()` function, run it through `ffOut()` to automatically save it in the project-specific output directory like this:
+You can use this convenient function for all your plots. Instead of passing your filename directly to the `pdf()` function, run it through `ffOut()` to automatically save it in the project-specific output directory like. First, though, we need to make sure the folder exists, which we can do with the `create` argument to the folder function:
+
+```{r}
+ffOut(create=TRUE)
+``` 
+
+Then we'll be able to generate our PDF in that folder:
 
 ```{r, eval=FALSE}
+
 pdf(ffOut("filename.pdf"))
 plot(1)
 dev.off()
@@ -96,7 +112,7 @@ You can also just use `projectInit("project_name", outputSubdir="fig1_clustering
 You get similar functions to easily access project-specific data, if you need it:
 
 ```{r}
-ffData()
+ffProc()
 ```
 
 You can get a quick look at all the folder functions populated using, `listff()`:
@@ -112,10 +128,23 @@ When we run `projectInit()`, one of the results is that we've populated a global
 
 Furthermore, it sets a global cache directory (by default at `${RESOURCES}/cache/RCache`), which will automatically be used for global caches by `simpleCache::simpleCacheShared()`. This lets you share caches across projects with ease.
 
-## Cleanup
 
-Let's clean up that temporary file we created earlier:
+## Setting up `.Rprofile`
 
-```{r, eval=TRUE}
-unlink(ffOut("filename.pdf"))
+
+
+To load `projectInit` by default, add this to your `.Rprofile`:
+
+```
+tryCatch({
+    library(projectInit)
+}, error = function(e) {
+    message(e)
+})
+```
+
+
+```{r, echo=FALSE}
+#Let's clean up that temporary file we created earlier:
+unlink(tempdir(), recursive=TRUE)
 ```

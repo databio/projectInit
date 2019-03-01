@@ -50,26 +50,3 @@ dirRes = function(...) ffRESOURCES(...)
 #' @export
 dirWeb = function(...) ffWEB(...)
 
-#' Helper function to silently create a subdirectory in the project
-#' output directory.
-#'
-#' @export
-createOutputSubdir = function(...) {
-	dir.create(dirOutRoot(...), showWarnings=FALSE, recursive=TRUE)
-}
-
-#' Creates and sets outputSubdir
-#' @export
-setOutputSubdir = function(...) {
-	dir.create(dirOutRoot(...), showWarnings=FALSE, recursive=TRUE)
-	setff("ROUT.SUBDIR", ...)
-}
-#' Helper function to silently create a subdirectory in the parent project
-#' directory (the processed data directory).
-#'
-#' @export
-createRootSubdir = function(...) {
-	dir.create(dirData(...), showWarnings=FALSE, recursive=TRUE)
-
-}
-

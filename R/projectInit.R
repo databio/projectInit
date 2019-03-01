@@ -14,7 +14,9 @@ NULL
 #' \code{projectInit} sources the \code{00-init.R} or \code{projectInit.R} 
 #' script for the project. You pass a complete folder or a relative path.
 #'
-#' @param codeRoot Path to the folder representing a code repository root.
+@param projectName A string identifying your project.
+
+#' @param codeDir Path to the folder of your code repository root.
 #' @param procDir Path to folder containing processed project data.
 #' @param rawDir Path to folder containing raw project data.
 #' @param outputSubdir Location for project-specific output, resolved by 
@@ -157,6 +159,15 @@ projectRefresh = function() {
 #' @export
 pr = projectRefresh
 
+createDir = function(...) {
+    dir.create(..., showWarnings=FALSE, recursive=TRUE)
+}
+
+#' Creates and sets outputSubdir
+#' @export
+setOutputSubdir = function(...) {
+    setff("Out", path=ffProc("analysis", ...))
+}
 
 #' Package handling function
 #' Detach a custom packages, re-document, re-install, and re-load.
