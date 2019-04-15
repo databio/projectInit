@@ -14,18 +14,20 @@ NULL
 #' \code{projectInit} sources the \code{00-init.R} or \code{projectInit.R} 
 #' script for the project. You pass a complete folder or a relative path.
 #'
-@param projectName A string identifying your project.
-
+#' @param projectName A string identifying your project.
 #' @param codeDir Path to the folder of your code repository root.
 #' @param procDir Path to folder containing processed project data.
 #' @param rawDir Path to folder containing raw project data.
+#' @param outDir Path to a folder for output
+#' @param resourcesDir Location of general-purpose resourcesRoot; default is to use 
+#'                  system environment variable \code{RESOURCES}.
 #' @param outputSubdir Location for project-specific output, resolved by 
 #'                     \code{dirOut} and stored as option \code{ROUT.SUBDIR}.
-#' @param resourcesRoot Location of general-purpose resourcesRoot; default is to use 
-#'                  system environment variable \code{RESOURCES}.
 #' @param scriptSubdir Name for the folder within \code{codeRoot} that 
 #'                     stores the scripts for this project.
-#' @param subproject name of the subproject to be activated
+#' @param pepConfig Use to specify the (relative) location of your actual
+#'     PEP config file.
+#' #' @param subproject name of the subproject to be activated
 #' @export
 projectInit = function( projectName,
                         codeDir=NULL,
@@ -36,7 +38,7 @@ projectInit = function( projectName,
                         resourcesDir=NULL,
                         outputSubdir=NULL, #deprecate?
                         scriptSubdir="src",
-                        projectConfig=NULL,
+                        pepConfig=NULL,
                         subproject=NULL) {
 
     if (!is.null(outputSubdir)){
@@ -89,7 +91,7 @@ projectInit = function( projectName,
     prj = NULL  # default value in case config is not found
 
 
-    cfgFile = findConfigFile(ffCode(), projectConfig, projectName)
+    cfgFile = findConfigFile(ffCode(), pepConfig, projectName)
 
     if (!is.null(cfgFile)){
         message("Found config file: ", cfgFile)
