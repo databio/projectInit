@@ -2,7 +2,7 @@ Package: projectInit
 Type: Package
 Title: Initialize Standardized R Workspaces for Individual Projects
 Version: 0.4.0
-Date: 2017-11-01
+Date: 2019-04-15
 Authors@R: c(person("Nathan", "Sheffield", email = "nathan@code.databio.org",
     role = c("aut", "cre")))
 Maintainer: Nathan Sheffield <nathan@code.databio.org>
