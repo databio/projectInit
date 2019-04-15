@@ -7,12 +7,12 @@
 findConfigFile(projectFolder, projectConfig = NULL, projectName = NULL)
 }
 \arguments{
-\item{projectFolder:}{Path to folder for project.}
+\item{projectFolder}{Path to folder for project.}
 
-\item{projectConfig:}{Specific config file name, given top priority for 
+\item{projectConfig}{Specific config file name, given top priority for 
 the search.}
 
-\item{projectName:}{Name for the project, from which a secondary 
+\item{projectName}{Name for the project, from which a secondary 
 high-priority config file name is derived.}
 }
 \value{

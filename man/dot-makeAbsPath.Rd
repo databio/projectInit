@@ -7,9 +7,9 @@
 .makeAbsPath(perhapsRelative, parent)
 }
 \arguments{
-\item{perhapsRelative:}{Path to primary target directory.}
+\item{perhapsRelative}{Path to primary target directory.}
 
-\item{parent:}{Path to parent folder to use if target isn't absolute.}
+\item{parent}{Path to parent folder to use if target isn't absolute.}
 }
 \value{
 Target itself if already absolute, else target nested within parent.

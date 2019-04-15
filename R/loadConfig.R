@@ -8,8 +8,8 @@
 #' \code{.firstFile} examines the filesystem and selects the first file
 #' from the given sequence that exists on it.
 #'
-#' @param files: The sequence file names or paths to consider.
-#' @param modify: How to modify each file before checking existence.
+#' @param files The sequence file names or paths to consider.
+#' @param modify How to modify each file before checking existence.
 #' @return (Absolute) path to the first file that exists.
 #'         \code{NULL} if there isn't one.
 .firstFile = function(files, modify=identity) {
@@ -17,7 +17,7 @@
 	modifiedFilePaths = sapply(files, modify)
 
 	for (modpath in modifiedFilePaths) { 
-		if (file_test("-f", modpath)) return(modpath) 
+		if (utils::file_test("-f", modpath)) return(modpath) 
 	}
 }
 
@@ -31,10 +31,10 @@
 #' \code{projectName} with which to create another high-priority filename 
 #' to look for.
 #'
-#' @param projectFolder: Path to folder for project.
-#' @param projectConfig: Specific config file name, given top priority for 
+#' @param projectFolder Path to folder for project.
+#' @param projectConfig Specific config file name, given top priority for 
 #'                        the search.
-#' @param projectName: Name for the project, from which a secondary 
+#' @param projectName Name for the project, from which a secondary 
 #'                     high-priority config file name is derived.
 #' @return Path to the top-prioirty config file found; \code{NULL} if no 
 #'         config file could be found.

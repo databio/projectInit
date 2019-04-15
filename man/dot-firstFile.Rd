@@ -7,9 +7,9 @@
 .firstFile(files, modify = identity)
 }
 \arguments{
-\item{files:}{The sequence file names or paths to consider.}
+\item{files}{The sequence file names or paths to consider.}
 
-\item{modify:}{How to modify each file before checking existence.}
+\item{modify}{How to modify each file before checking existence.}
 }
 \value{
 (Absolute) path to the first file that exists.

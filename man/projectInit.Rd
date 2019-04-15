@@ -4,17 +4,31 @@
 \name{projectInit}
 \alias{projectInit}
 \alias{projectInit-package}
+\alias{project.init}
+\alias{project.init2}
+\alias{go}
 \title{Package docs}
 \usage{
 projectInit(projectName, codeDir = NULL, procDir = NULL,
   rawDir = NULL, webDir = NULL, outDir = NULL, resourcesDir = NULL,
-  outputSubdir = NULL, scriptSubdir = "src", projectConfig = NULL,
+  outputSubdir = NULL, scriptSubdir = "src", pepConfig = NULL,
   subproject = NULL)
 }
 \arguments{
+\item{projectName}{A string identifying your project.}
+
+\item{codeDir}{Path to the folder of your code repository root.}
+
 \item{procDir}{Path to folder containing processed project data.}
 
 \item{rawDir}{Path to folder containing raw project data.}
+
+\item{webDir}{Path to folder for web output.}
+
+\item{outDir}{Path to a folder for output}
+
+\item{resourcesDir}{Location of general-purpose resourcesRoot; default is to use 
+system environment variable \code{RESOURCES}.}
 
 \item{outputSubdir}{Location for project-specific output, resolved by 
 \code{dirOut} and stored as option \code{ROUT.SUBDIR}.}
@@ -22,12 +36,10 @@ projectInit(projectName, codeDir = NULL, procDir = NULL,
 \item{scriptSubdir}{Name for the folder within \code{codeRoot} that 
 stores the scripts for this project.}
 
+\item{pepConfig}{Use to specify the (relative) location of your actual
+PEP config file.}
+
 \item{subproject}{name of the subproject to be activated}
-
-\item{codeRoot}{Path to the folder representing a code repository root.}
-
-\item{resourcesRoot}{Location of general-purpose resourcesRoot; default is to use 
-system environment variable \code{RESOURCES}.}
 }
 \description{
 \code{projectInit} sources the \code{00-init.R} or \code{projectInit.R} 

@@ -18,6 +18,7 @@ NULL
 #' @param codeDir Path to the folder of your code repository root.
 #' @param procDir Path to folder containing processed project data.
 #' @param rawDir Path to folder containing raw project data.
+#' @param webDir Path to folder for web output.
 #' @param outDir Path to a folder for output
 #' @param resourcesDir Location of general-purpose resourcesRoot; default is to use 
 #'                  system environment variable \code{RESOURCES}.
@@ -27,7 +28,8 @@ NULL
 #'                     stores the scripts for this project.
 #' @param pepConfig Use to specify the (relative) location of your actual
 #'     PEP config file.
-#' #' @param subproject name of the subproject to be activated
+#' @param subproject name of the subproject to be activated
+#' @aliases project.init project.init2 go
 #' @export
 projectInit = function( projectName,
                         codeDir=NULL,
@@ -70,7 +72,7 @@ projectInit = function( projectName,
         }
     }
 
-    o = capture.output( { 
+    o = utils::capture.output( { 
         setffDefault("Code", codeDir, "CODE", projectName)
         setffDefault("Proc", procDir, "PROCESSED", projectName)
         setffDefault("Raw", rawDir, "DATA", projectName)
@@ -135,18 +137,6 @@ projectInit = function( projectName,
     invisible(prj)
 }
 
-#' Alias for backward compatibility
-#' @export 
-project.init = projectInit
-
-#' Alias for backward compatibility
-#' @export
-project.init2 = projectInit
-
-#' Alias so I don't have to type so much
-#' @export
-go = projectInit
-
 #' Helper alias to re-run init script, using your current dir settings.
 #' @export
 projectRefresh = function() { 
@@ -166,6 +156,7 @@ createDir = function(...) {
 }
 
 #' Creates and sets outputSubdir
+#' @param ... Arguments passed to \code{ffProc()}.
 #' @export
 setOutputSubdir = function(...) {
     setff("Out", path=ffProc("analysis", ...))
@@ -176,6 +167,7 @@ setOutputSubdir = function(...) {
 #' Useful if I'm debugging packages and want to try the new version.
 #' Expects it to be in the ${CODE} folder by default
 #' @param pkg Package name
+#' @param path Local path to package folder
 #' @param roxygenize   Should I roxygen2::roxygenize it to refresh documentation
 #'     before installing?
 #' @param compileAttributes    Should I Rcpp:compileAttributes to refresh Rcpp
@@ -203,7 +195,7 @@ refreshPackage = function(pkg, path=Sys.getenv("CODE"),
     }, error = function(e) {
         message(e)
     } )
-    install.packages(packageDir, repos=NULL)
+    utils::install.packages(packageDir, repos=NULL)
     library(pkg, character.only=TRUE)
 }
 
@@ -218,7 +210,7 @@ refreshPackage = function(pkg, path=Sys.getenv("CODE"),
 #' @export
 toggleError = function() {
     if(is.null(getOption("error"))) {
-        options(error=recover)
+        options(error=utils::recover)
         message("Error mode set to 'recover'")
     } else{
         options(error=NULL)

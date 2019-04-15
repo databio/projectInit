@@ -13,6 +13,8 @@ refreshPackage(pkg, path = Sys.getenv("CODE"),
 \arguments{
 \item{pkg}{Package name}
 
+\item{path}{Local path to package folder}
+
 \item{compileAttributes}{Should I Rcpp:compileAttributes to refresh Rcpp
 code before installing?}
 
