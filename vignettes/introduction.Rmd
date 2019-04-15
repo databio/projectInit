@@ -32,6 +32,15 @@ You would just set these up to correct locations for each user and each computer
 
 A data analysis project is a collection of R scripts. We assume that you have a folder for each project where you keep these R scripts, and these folders are each stored in your root `$CODE` folder. Then, you can initialize an R project using `projectInit` with this code:
 
+```{r, echo=FALSE}
+# set up vignette to use a temp dir
+options(PROCESSED=file.path(tempdir(), "processed"))
+options(DATA=file.path(tempdir(), "data"))
+options(WEB=file.path(tempdir(), "web"))
+options(CODE=file.path(tempdir(), "code"))
+options(RESOURCES=file.path(tempdir(), "resources"))
+```
+
 ```{r}
 library("projectInit")
 projectInit("project_name")
@@ -41,10 +50,10 @@ This will do a number of things:
 
 1. Changes your working directory to `${CODE}/project_name`
 
-2. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/00-init.R`.
+2. Runs a project-specific R init script, if you have one saved at `${CODE}/project_name/src/00-init.R`.
 
 3. Populates several project-level variables:
-- an processed data folder at ${PROCESSED}/project_name
+- an processed data folder at `${PROCESSED}/project_name`
 - a project-level cache directory at `${PROCESSED}/project_name/RCache`. This variable is read as the default by R package `simpleCache`, so your caches will now be stored in a specified cache directory for this project.
 
 Let's go through some of these in a bit more detail:
@@ -52,28 +61,35 @@ Let's go through some of these in a bit more detail:
 
 ## Initialization script
 
-In the init script (by default at `${CODE}/project_name/00-init.R`), you should put whatever `library()` calls or other things you need that you want to be loaded all the time, for every script in this project. This is also where I define project-level functions that I want to use multiple times in the project, and where I load up project metadata (like sample annotation sheets) and other configuration options.
+In the init script (by default at `${CODE}/project_name/src/00-init.R`), you should put whatever `library()` calls or other things you need that you want to be loaded all the time, for every script in this project. This is also where I define project-level functions that I want to use multiple times in the project, and where I load up project metadata (like sample annotation sheets) and other configuration options.
 
 
 ## Output path functions
 
-The second major thing done by the `projectInit()` function is that it sets global R variables to match your environment variables and provides a series of helper functions to locate input and direct output without worrying about file paths.
+The second major thing done by the `projectInit()` function is that it provides a series of helper functions for input and output directories, without worrying about file paths. `projectInit` uses the `folderfun` package (available on CRAN) to do this, and you can read more about how this works there.
 
 For example, try:
 
 ```{r}
-dirOut()
+ffOut()
 ```
 
-You can use this convenient function for all your plots. Instead of passing your filename directly to the `pdf()` function, run it through `dirOut()` to automatically save it in the project-specific output directory like this:
+You can use this convenient function for all your plots. Instead of passing your filename directly to the `pdf()` function, run it through `ffOut()` to automatically save it in the project-specific output directory like. First, though, we need to make sure the folder exists, which we can do with the `create` argument to the folder function:
+
+```{r}
+ffOut(create=TRUE)
+``` 
+
+Then we'll be able to generate our PDF in that folder:
 
 ```{r, eval=FALSE}
-pdf(dirOut("filename.pdf"))
+
+pdf(ffOut("filename.pdf"))
 plot(1)
 dev.off()
 ```
 
-The beauty of this is portability: if you change projects or locations, or share this script with others, the code will just work, putting the plot in the correct location. If you had hard-coded the path everywhere, you'd have to change all that to lift code to a new project or to change compute environments, or if you changed the project output folder.
+This has two advantages: First, each project has a set space, so your outputs are organized by project systematically. Second, it provides portability: if you change projects or locations, or share this script with others, the code will just work, putting the plot in the correct location. If you had hard-coded the path everywhere, you'd have to change all that to lift code to a new project or to change compute environments, or if you changed the project output folder.
 
 You can also extend this easily with subfolders. When projects become large, it's useful to divide them into components. For example, I usually organize my R scripts around figures for a scientific paper, so all my scripts that produce panels or supporting information for figure 1 belong together, and so on. There may be a dozen scripts for each figure, and I'd like to easily include all the related output files in a separate subfolder. I can accomplish this like this. For all scripts relevant to figure 1, I use this code at the top of each script:
 
@@ -86,21 +102,23 @@ setOutputSubdir("fig1_clustering")
 Now in these scripts when I use `dirOut()`, it's smart enough to automatically place these figures in an appropriate subfolder:
 
 ```{r}
-dirOut()
+ffOut()
 ```
+
+You can also just use `projectInit("project_name", outputSubdir="fig1_clustering")` for short.
 
 ## Data path functions
 
 You get similar functions to easily access project-specific data, if you need it:
 
 ```{r}
-dirData()
+ffProc()
 ```
 
-You can get a quick look at all the variables populated with the project environment function, `penv`:
+You can get a quick look at all the folder functions populated using, `listff()`:
 
 ```{r}
-penv()
+folderfun::listff()
 ```
 
 
@@ -110,10 +128,23 @@ When we run `projectInit()`, one of the results is that we've populated a global
 
 Furthermore, it sets a global cache directory (by default at `${RESOURCES}/cache/RCache`), which will automatically be used for global caches by `simpleCache::simpleCacheShared()`. This lets you share caches across projects with ease.
 
-## Cleanup
 
-Let's clean up that temporary file we created earlier:
+## Setting up `.Rprofile`
 
-```{r, eval=FALSE}
-unlink(dirOut("filename.pdf"))
+
+
+To load `projectInit` by default, add this to your `.Rprofile`:
+
+```
+tryCatch({
+    library(projectInit)
+}, error = function(e) {
+    message(e)
+})
+```
+
+
+```{r, echo=FALSE}
+#Let's clean up that temporary file we created earlier:
+unlink(tempdir(), recursive=TRUE)
 ```

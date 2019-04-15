@@ -8,31 +8,7 @@
 devtools::install_github("databio/projectInit")
 ```
 
-## Environment
+## Instructions
 
-`projectInit` uses environment variables to enable portablility across systems and users. You should set up 3 environment variables to use `projectInit` most effectively: `CODE`, `RESOURCES`, and `PROCESSED`.
+View the [vignette](http://code.databio.org/projectInit) to see how to use it.
 
-For example, I add this to my `.bashrc`:
-
-```
-# Pointer to the collection of git repos
-export CODE="$HOME/code/"
-
-# Pointer to the common shared resources directory
-export RESOURCES="/h4/t1/resources/"
-
-# Pointer to the 'processed data' filesystem
-export PROCESSED="/sfs/lustre/allocations/shefflab/processed/"
-```
-
-
-## Setting up .Rprofile
-
-To load `projectInit` by default, add this to your `.Rprofile`:
-```
-tryCatch({
-    library(projectInit)
-}, error = function(e) {
-    message(e)
-})
-```
