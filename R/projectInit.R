@@ -105,7 +105,7 @@ projectInit = function( projectName,
                 message("Loading project variables into shared variables environment...")
                 loadr::eload(nlist(prj))
             } else {
-                message("No loadr package, skipping shared environment loading")
+                message("Package 'loadr' not installed, skipping shared environment loading")
             }
         }
     }
