@@ -10,8 +10,6 @@
 
 * First major stable release
 
-## Changed
-
 # projectInit 0.2 - 2017-08-25
 
 * Transition version
