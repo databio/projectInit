@@ -66,28 +66,29 @@ projectInit = function( projectName,
 
     setffDefault = function(name, path, pathVar, postpend) {
         if (is.null(path)) {
-            folderfun::setff(name, pathVar=pathVar, postpend=postpend)
+            folderfun::setff(name, pathVar=pathVar, postpend=postpend, failFunction=warning)
         } else {
-            folderfun::setff(name, path=path)
+            folderfun::setff(name, path=path, failFunction=warning)
         }
     }
 
-    o = utils::capture.output( { 
+    # o = utils::capture.output( {
+
         setffDefault("Code", codeDir, "CODE", projectName)
         setffDefault("Proc", procDir, "PROCESSED", projectName)
         setffDefault("Raw", rawDir, "DATA", projectName)
         setffDefault("Web", webDir, "WEB", projectName)
         setffDefault("Out", outDir, "PROCESSED", file.path(projectName, "analysis"))
 
-        folderfun::setff("Res", pathVar="RESOURCES")
-        folderfun::setff("ResCache", ffRes(), postpend=file.path("cache", "RCache"))
-        folderfun::setff("Cache", ffProc(), postpend="RCache")
-        folderfun::setff("ProcRoot", pathVar="PROCESSED")
-        folderfun::setff("RawRoot", pathVar="DATA")
-        folderfun::setff("WebRoot", pathVar="WEB")
-        folderfun::setff("OutRoot", pathVar="PROCESSED")
-        folderfun::setff("Build", ffCode(), postpend="RBuild")
-    }, type="message")
+        folderfun::setff("Res", pathVar="RESOURCES", failFunction=warning)
+        folderfun::setff("ResCache", ffRes(), postpend=file.path("cache", "RCache"), failFunction=warning)
+        folderfun::setff("Cache", ffProc(), postpend="RCache", failFunction=warning)
+        folderfun::setff("ProcRoot", pathVar="PROCESSED", failFunction=warning)
+        folderfun::setff("RawRoot", pathVar="DATA", failFunction=warning)
+        folderfun::setff("WebRoot", pathVar="WEB", failFunction=warning)
+        folderfun::setff("OutRoot", pathVar="PROCESSED", failFunction=warning)
+        folderfun::setff("Build", ffCode(), postpend="RBuild", failFunction=warning)
+    # }, type="message")
     # 2. Load PEP
 
     prj = NULL  # default value in case config is not found
