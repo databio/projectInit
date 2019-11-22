@@ -11,7 +11,7 @@ Description: Makes it easy to initialize a customized workspace, relying on
 	project-specific results directories, data inputs, shared temporary files, and
 	other resources.
 Depends:
-    folderfun
+    folderfun (>= 0.1.3)
 Imports:
     devtools
 Suggests:

@@ -12,7 +12,7 @@
 projectInit(projectName, codeDir = NULL, procDir = NULL,
   rawDir = NULL, webDir = NULL, outDir = NULL, resourcesDir = NULL,
   outputSubdir = NULL, scriptSubdir = "src", pepConfig = NULL,
-  subproject = NULL)
+  subproject = NULL, loadrName = NULL)
 }
 \arguments{
 \item{projectName}{A string identifying your project.}
@@ -40,10 +40,14 @@ stores the scripts for this project.}
 PEP config file.}
 
 \item{subproject}{name of the subproject to be activated}
+
+\item{loadrName}{name to use in the shared variable environment. If not specified, 
+will use projectName_subproject.}
 }
 \description{
 \code{projectInit} sources the \code{00-init.R} or \code{projectInit.R} 
-script for the project. You pass a complete folder or a relative path.
+script for the project. You pass a complete folder or a relative path. This 
+function is intended to be run just once per session.
 }
 \references{
 \url{http://github.com/databio/projectInit}
