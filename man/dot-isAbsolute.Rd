@@ -16,6 +16,7 @@ Flag indicating whether the \code{path} appears to be absolute.
 Determine whether a path is absolute.
 }
 \seealso{
-Other path operations: \code{\link{.selectPath}}
+Other path operations: 
+\code{\link{.selectPath}()}
 }
 \concept{path operations}

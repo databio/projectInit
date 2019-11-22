@@ -4,8 +4,7 @@
 \alias{projectLoad}
 \title{Loads a project without the rest of the init tasks.}
 \usage{
-projectLoad(projectName, pepConfig = NULL, subproject = NULL,
-  loadrName = NULL)
+projectLoad(projectName, pepConfig = NULL, subproject = NULL, loadrName = NULL)
 }
 \arguments{
 \item{projectName}{A string identifying your project.}

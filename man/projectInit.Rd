@@ -3,16 +3,25 @@
 \docType{package}
 \name{projectInit}
 \alias{projectInit}
-\alias{projectInit-package}
 \alias{project.init}
 \alias{project.init2}
 \alias{go}
 \title{Package docs}
 \usage{
-projectInit(projectName, codeDir = NULL, procDir = NULL,
-  rawDir = NULL, webDir = NULL, outDir = NULL, resourcesDir = NULL,
-  outputSubdir = NULL, scriptSubdir = "src", pepConfig = NULL,
-  subproject = NULL, loadrName = NULL)
+projectInit(
+  projectName,
+  codeDir = NULL,
+  procDir = NULL,
+  rawDir = NULL,
+  webDir = NULL,
+  outDir = NULL,
+  resourcesDir = NULL,
+  outputSubdir = NULL,
+  scriptSubdir = "src",
+  pepConfig = NULL,
+  subproject = NULL,
+  loadrName = NULL
+)
 }
 \arguments{
 \item{projectName}{A string identifying your project.}
