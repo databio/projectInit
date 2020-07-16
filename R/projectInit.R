@@ -122,7 +122,9 @@ projectInit = function( projectName,
         .tidymsg(msg)
     }
 
+    message(paste0("Setting working directory to ", ffCode()))
     setwd(ffCode())
+
     if (requireNamespace("simpleCache", quietly=TRUE)) {
         simpleCache::setCacheDir(ffCache())
     } else {
@@ -149,7 +151,7 @@ projectLoad = function(projectName, pepConfig=NULL, subproject=NULL, loadrName=N
     }
 
     cfgFile = findConfigFile(ffCodeRoot(projectName), pepConfig, projectName)
-
+    prj = NULL
     if (!is.null(cfgFile)){
         message("Found config file: ", cfgFile)
         if (requireNamespace("pepr", quietly=TRUE)) {
