@@ -133,8 +133,7 @@ projectInit = function( projectName,
 
 #' Loads a project without the rest of the init tasks.
 #' @param projectName A string identifying your project.
-#' @param pepConfig Use to specify the (relative) location of your actual
-#'     PEP config file.
+#' @param pepConfig Relative location of your PEP config file.
 #' @param subproject name of the subproject to be activated
 #' @param loadrName name to use in the shared variable environment. If not specified, 
 #'        will use projectName_subproject.
@@ -166,7 +165,9 @@ projectLoad = function(projectName, pepConfig=NULL, subproject=NULL, loadrName=N
             }
         }
     }
-    invisible(prj)
+    if (!is.null(prj)) {
+        invisible(prj)
+    }
 }
 
 #' Helper alias to re-run init script, using your current dir settings.
