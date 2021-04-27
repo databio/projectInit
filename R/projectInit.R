@@ -154,7 +154,8 @@ projectLoad = function(projectName, pepConfig=NULL, subproject=NULL, loadrName=N
     prj = NULL
     if (!is.null(cfgFile)){
         message("Found config file: ", cfgFile)
-        if (requireNamespace("pepr", quietly=TRUE)) {
+        hasPepr = requireNamespace("pepr", quietly=TRUE)
+        if (hasPepr) {
             prj = pepr::Project(cfgFile, subproject)
            
             # Use loadr to keep the pep in a shared environment, if installed
@@ -165,6 +166,8 @@ projectLoad = function(projectName, pepConfig=NULL, subproject=NULL, loadrName=N
             } else {
                 message("Package 'loadr' not installed, skipping shared environment loading")
             }
+        } else {
+            message("pepr not installed")
         }
     }
     if (!is.null(prj)) {
