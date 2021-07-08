@@ -12,8 +12,9 @@ NULL
 #' Project workspace initializer
 #'
 #' \code{projectInit} sources the \code{00-init.R} or \code{projectInit.R} 
-#' script for the project. You pass a complete folder or a relative path.
-#'
+#' script for the project. You pass a complete folder or a relative path. This 
+#' function is intended to be run just once per session.
+#' 
 #' @param projectName A string identifying your project.
 #' @param codeDir Path to the folder of your code repository root.
 #' @param procDir Path to folder containing processed project data.
@@ -29,6 +30,8 @@ NULL
 #' @param pepConfig Use to specify the (relative) location of your actual
 #'     PEP config file.
 #' @param subproject name of the subproject to be activated
+#' @param loadrName name to use in the shared variable environment. If not specified, 
+#'        will use projectName_subproject.
 #' @aliases project.init project.init2 go
 #' @export
 projectInit = function( projectName,
@@ -41,7 +44,8 @@ projectInit = function( projectName,
                         outputSubdir=NULL, #deprecate?
                         scriptSubdir="src",
                         pepConfig=NULL,
-                        subproject=NULL) {
+                        subproject=NULL,
+                        loadrName=NULL) {
 
     if (!is.null(outputSubdir)){
         .tidymsg("Found subdir: ", outputSubdir)
@@ -66,49 +70,34 @@ projectInit = function( projectName,
 
     setffDefault = function(name, path, pathVar, postpend) {
         if (is.null(path)) {
-            folderfun::setff(name, pathVar=pathVar, postpend=postpend)
+            folderfun::setff(name, pathVar=pathVar, postpend=postpend, failFunction=warning)
         } else {
-            folderfun::setff(name, path=path)
+            folderfun::setff(name, path=path, failFunction=warning)
         }
     }
 
-    o = utils::capture.output( { 
+    # o = utils::capture.output( {
+
         setffDefault("Code", codeDir, "CODE", projectName)
         setffDefault("Proc", procDir, "PROCESSED", projectName)
         setffDefault("Raw", rawDir, "DATA", projectName)
         setffDefault("Web", webDir, "WEB", projectName)
         setffDefault("Out", outDir, "PROCESSED", file.path(projectName, "analysis"))
 
-        folderfun::setff("Res", pathVar="RESOURCES")
-        folderfun::setff("ResCache", ffRes(), postpend=file.path("cache", "RCache"))
-        folderfun::setff("Cache", ffProc(), postpend="RCache")
-        folderfun::setff("ProcRoot", pathVar="PROCESSED")
-        folderfun::setff("RawRoot", pathVar="DATA")
-        folderfun::setff("WebRoot", pathVar="WEB")
-        folderfun::setff("OutRoot", pathVar="PROCESSED")
-        folderfun::setff("Build", ffCode(), postpend="RBuild")
-    }, type="message")
+        folderfun::setff("Res", pathVar="RESOURCES", failFunction=warning)
+        folderfun::setff("ResCache", ffRes(), postpend=file.path("cache", "RCache"), failFunction=warning)
+        folderfun::setff("Cache", ffProc(), postpend="RCache", failFunction=warning)
+        folderfun::setff("CodeRoot", pathVar="CODE", failFunction=warning)
+        folderfun::setff("ProcRoot", pathVar="PROCESSED", failFunction=warning)
+        folderfun::setff("RawRoot", pathVar="DATA", failFunction=warning)
+        folderfun::setff("WebRoot", pathVar="WEB", failFunction=warning)
+        folderfun::setff("OutRoot", pathVar="PROCESSED", failFunction=warning)
+        folderfun::setff("Build", ffCode(), postpend="RBuild", failFunction=warning)
+    # }, type="message")
     # 2. Load PEP
 
     prj = NULL  # default value in case config is not found
-
-
-    cfgFile = findConfigFile(ffCode(), pepConfig, projectName)
-
-    if (!is.null(cfgFile)){
-        message("Found config file: ", cfgFile)
-        if (requireNamespace("pepr", quietly=TRUE)) {
-            prj = pepr::Project(cfgFile, subproject)
-           
-            # Use loadr to keep the pep in a shared environment, if installed
-            if (requireNamespace("loadr", quietly=TRUE)) {
-                message("Loading project variables into shared variables environment...")
-                loadr::eload(nlist(prj))
-            } else {
-                message("No loadr package, skipping shared environment loading")
-            }
-        }
-    }
+    prj = projectLoad(projectName, pepConfig, subproject, loadrName)
 
     # Notify if RGenomeUtils is not found.
 
@@ -133,8 +122,57 @@ projectInit = function( projectName,
         .tidymsg(msg)
     }
 
+    message(paste0("Setting working directory to ", ffCode()))
+    setwd(ffCode())
 
+    if (requireNamespace("simpleCache", quietly=TRUE)) {
+        simpleCache::setCacheDir(ffCache())
+    } else {
+        message("Install simpleCache to set cache dir")
+    }
     invisible(prj)
+}
+
+#' Loads a project without the rest of the init tasks.
+#' @param projectName A string identifying your project.
+#' @param pepConfig Relative location of your PEP config file.
+#' @param subproject name of the subproject to be activated
+#' @param loadrName name to use in the shared variable environment. If not specified, 
+#'        will use projectName_subproject.
+#' @export
+projectLoad = function(projectName, pepConfig=NULL, subproject=NULL, loadrName=NULL) {
+
+    if (is.null(loadrName)) {
+        if (is.null(subproject)) {
+            loadrName = projectName
+        } else {
+            loadrName = paste(projectName, subproject, sep="_")
+        }
+    }
+
+    cfgFile = findConfigFile(ffCodeRoot(projectName), pepConfig, projectName)
+    prj = NULL
+    if (!is.null(cfgFile)){
+        message("Found config file: ", cfgFile)
+        hasPepr = requireNamespace("pepr", quietly=TRUE)
+        if (hasPepr) {
+            prj = pepr::Project(cfgFile, subproject)
+           
+            # Use loadr to keep the pep in a shared environment, if installed
+            if (requireNamespace("loadr", quietly=TRUE)) {
+                message("Loading project variables into shared variables environment...")
+                # loadr::eload(nlist(prj))
+                loadr::vload(prj, varNames=loadrName)
+            } else {
+                message("Package 'loadr' not installed, skipping shared environment loading")
+            }
+        } else {
+            message("pepr not installed")
+        }
+    }
+    if (!is.null(prj)) {
+        invisible(prj)
+    }
 }
 
 #' Helper alias to re-run init script, using your current dir settings.

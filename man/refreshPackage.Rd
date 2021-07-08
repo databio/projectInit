@@ -7,8 +7,12 @@ Detach a custom packages, re-document, re-install, and re-load.
 Useful if I'm debugging packages and want to try the new version.
 Expects it to be in the ${CODE} folder by default}
 \usage{
-refreshPackage(pkg, path = Sys.getenv("CODE"),
-  compileAttributes = TRUE, roxygenize = TRUE)
+refreshPackage(
+  pkg,
+  path = Sys.getenv("CODE"),
+  compileAttributes = TRUE,
+  roxygenize = TRUE
+)
 }
 \arguments{
 \item{pkg}{Package name}

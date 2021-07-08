@@ -22,6 +22,7 @@
 Returns an absolute path
 }
 \seealso{
-Other path operations: \code{\link{.isAbsolute}}
+Other path operations: 
+\code{\link{.isAbsolute}()}
 }
 \concept{path operations}

@@ -1,7 +1,7 @@
 Package: projectInit
 Type: Package
 Title: Initialize Standardized R Workspaces for Individual Projects
-Version: 0.4.0
+Version: 0.4.2
 Date: 2019-04-15
 Authors@R: c(person("Nathan", "Sheffield", email = "nathan@code.databio.org",
     role = c("aut", "cre")))
@@ -11,7 +11,7 @@ Description: Makes it easy to initialize a customized workspace, relying on
 	project-specific results directories, data inputs, shared temporary files, and
 	other resources.
 Depends:
-    folderfun
+    folderfun (>= 0.1.3)
 Imports:
     devtools
 Suggests:
@@ -24,4 +24,4 @@ Enhances:
 VignetteBuilder: knitr
 Encoding: UTF-8
 License: GPL-3
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.1
